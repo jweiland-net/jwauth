@@ -16,15 +16,15 @@ $EM_CONF[$_EXTKEY] = array(
 	'category' => 'plugin',
 	'author' => 'Stefan Froemken',
 	'author_email' => 'projects@jweiland.net',
-	'state' => 'alpha',
+	'state' => 'stable',
 	'internal' => '',
 	'uploadfolder' => '',
 	'createDirs' => '',
 	'clearCacheOnLoad' => 0,
-	'version' => '0.1.0',
+	'version' => '1.0.0',
 	'constraints' => array(
 		'depends' => array(
-			'typo3' => '6.2',
+			'typo3' => '6.2.0-7.2.99',
 		),
 		'conflicts' => array(
 		),
