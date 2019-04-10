@@ -1,0 +1,30 @@
+{
+	"name": "jweiland/jwauth",
+	"type": "typo3-cms-extension",
+	"description": "Login to TYPO3 backend with your static IP address",
+	"license": "GPL-2.0-or-later",
+	"keywords": ["typo3", "TYPO3 CMS", "auth", "login"],
+	"homepage": "http://www.jweiland.net",
+	"authors": [
+		{
+			"name": "Stefan Froemken",
+			"email": "projects@jweiland.net",
+			"role": "Lead Developer"
+		}
+	],
+	"support": {
+		"email": "projects@jweiland.net",
+		"issues": "https://github.com/jweiland-net/jwauth/issues",
+		"source": "https://github.com/jweiland-net/jwauth"
+	},
+	"require": {
+		"ext-dom": "*",
+		"ext-libxml": "*",
+		"typo3/cms-core": "^8.7 || ^9.5"
+	},
+	"autoload": {
+		"psr-4": {
+			"JWeiland\\Jwauth\\": "Classes"
+		}
+	}
+}

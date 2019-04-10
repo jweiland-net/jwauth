@@ -1,6 +1,6 @@
 <?php
 if (!defined('TYPO3_MODE')) {
-	die ('Access denied.');
+    die ('Access denied.');
 }
 
 // Check login with each Request
@@ -13,29 +13,22 @@ $GLOBALS['TYPO3_CONF_VARS']['SVCONF']['auth']['setup']['FE_alwaysFetchUser'] = T
 
 // add service to get a fe_user with defined IP-Address
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
-	'jwauth',
-	'auth',
-	\JWeiland\Jwauth\Service\IpAuthService::class,
-	array(
-		'title' => 'FE IP authentication',
-		'description' => 'Login to FE with help of IP',
-		'subtype' => 'getUserFE,authUserFE',
-		'available' => TRUE,
-		'priority' => 80,
-		// must be higher than \TYPO3\CMS\Sv\AuthenticationService (50) and rsaauth (60) but lower than OpenID (75)
-		'quality' => 80,
-		'os' => '',
-		'exec' => '',
-		'className' => \JWeiland\Jwauth\Service\IpAuthService::class
-	)
+    'jwauth',
+    'auth',
+    \JWeiland\Jwauth\Service\IpAuthService::class,
+    [
+        'title' => 'FE IP authentication',
+        'description' => 'Login to FE with help of IP',
+        'subtype' => 'getUserFE,authUserFE',
+        'available' => TRUE,
+        'priority' => 80,
+        // must be higher than \TYPO3\CMS\Sv\AuthenticationService (50) and rsaauth (60) but lower than OpenID (75)
+        'quality' => 80,
+        'os' => '',
+        'exec' => '',
+        'className' => \JWeiland\Jwauth\Service\IpAuthService::class
+    ]
 );
 
-// we don't want to save session data in cookie
-$GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'] = array(
-	\TYPO3\CMS\Core\Authentication\AbstractUserAuthentication::class => array(
-		'className' => \JWeiland\Jwauth\Authentication\AbstractJWeilandUserAuthentication::class
-	)
-);
-
-// delete saved session data from fe_users_session
+// Delete saved session data from fe_users_session
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['hook_eofe'][] = \JWeiland\Jwauth\FeUser::class . '->clearFeUserSession';
