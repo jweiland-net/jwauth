@@ -23,9 +23,8 @@ To install the extension, perform the following steps:
 Configuration
 -------------
 
-There is a new textfield called "IP Address" in FE-User records available. We haven't created a special tab for this
-field, so you should find it on tab "Extended". If it is not there you may have installed some additional extensions
-which brings its own tabs. Please have a look there, too.
+The extension jwauth adds a new textfield called "IP Address" in FE-User records. We haven't created a special tab
+for this column, so you will find it on the last tab of fe_user record.
 
 .. _admin-faq:
 
@@ -35,7 +34,7 @@ FAQ
 Is this extension IPv6 compatible
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Yes it is. It uses the comIP() method of GeneralUtility to validate and compare IPv6 addresses.
+Yes it is. It uses the comIP() method of GeneralUtility which can validate IPv4 and IPv6 addresses.
 
 What about "Logout"?
 ^^^^^^^^^^^^^^^^^^^^
