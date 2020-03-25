@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 namespace JWeiland\Jwauth\Service;
 
 /*
@@ -15,6 +16,7 @@ namespace JWeiland\Jwauth\Service;
  */
 
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Service\AbstractService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
@@ -37,7 +39,7 @@ class IpAuthService extends AbstractService
     /**
      * @var array
      */
-    protected $authInfo = '';
+    protected $authInfo = [];
 
     /**
      * @var FrontendUserAuthentication
@@ -45,11 +47,11 @@ class IpAuthService extends AbstractService
     protected $feUserAuth;
 
     /**
-     * returns true, if Service is available
+     * Returns true, if Service is available
      *
      * @return bool
      */
-    public function init()
+    public function init(): bool
     {
         // @ToDo: Add some checks
         return true;
@@ -61,8 +63,12 @@ class IpAuthService extends AbstractService
      * @param array $authInfo
      * @param FrontendUserAuthentication $feUserAuth
      */
-    public function initAuth($subType, $loginData, $authInfo, \TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication $feUserAuth)
-    {
+    public function initAuth(
+        string $subType,
+        array $loginData,
+        array $authInfo,
+        FrontendUserAuthentication $feUserAuth
+    ) {
         $this->subType = $subType;
         $this->loginData = $loginData;
         $this->authInfo = $authInfo;
@@ -70,21 +76,29 @@ class IpAuthService extends AbstractService
     }
 
     /**
-     * get fe_user with given IP-Address
+     * Get fe_user with given IP-Address
      *
-     * @return array|false
+     * @return array Empty array, if user was not found
      */
-    public function getUser()
+    public function getUser(): array
     {
-        // search on all pids for user records
-        $this->authInfo['db_user']['check_pid_clause'] = '';
-        // get remote address
-        $remoteAddress = htmlspecialchars(strip_tags($this->authInfo['REMOTE_ADDR']));
+        $remoteAddress = htmlspecialchars(strip_tags($this->authInfo['REMOTE_ADDR'] ?? ''));
+        if (empty($remoteAddress)) {
+            // Do not try to fetch one of all fe_users where no IP address is assigned
+            return [];
+        }
 
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('fe_users');
-        $user = $queryBuilder
-            ->select('*')
-            ->from('fe_users')
+        $bestMatchingUser = $this->getBestMatchingUser($remoteAddress);
+        if (empty($bestMatchingUser)) {
+            $bestMatchingUser = $this->getBestPartlyMatchingUser($remoteAddress);
+        }
+        return $bestMatchingUser;
+    }
+
+    public function getBestMatchingUser(string $remoteAddress): array
+    {
+        $queryBuilder = $this->getPreparedQueryBuilderForFeUsers();
+        $frontendUser = $queryBuilder
             ->where(
                 $queryBuilder->expr()->eq(
                     'ip_address',
@@ -94,24 +108,70 @@ class IpAuthService extends AbstractService
             ->execute()
             ->fetch();
 
-        if ($user === false) {
-            $user = [];
+        if ($frontendUser === false) {
+            $frontendUser = [];
         }
 
-        return $user;
+        return $frontendUser;
+    }
+
+    public function getBestPartlyMatchingUser(string $remoteAddress): array
+    {
+        $isIPv6 = (bool)strpos($remoteAddress, ':');
+        $divider = $isIPv6 ? ':' : '.';
+        $matchedFrontendUsers = [];
+        $addressParts = GeneralUtility::trimExplode($divider, $remoteAddress);
+        array_pop($addressParts);
+        $queryBuilder = $this->getPreparedQueryBuilderForFeUsers();
+        while ($addressParts) {
+            $frontendUsers = $queryBuilder
+                ->where(
+                    $queryBuilder->expr()->neq(
+                        'ip_address',
+                        $queryBuilder->createNamedParameter('', \PDO::PARAM_STR)
+                    ),
+                    $queryBuilder->expr()->like(
+                        'ip_address',
+                        $queryBuilder->createNamedParameter(
+                            implode($divider, $addressParts) . '%',
+                            \PDO::PARAM_STR)
+                    )
+                )
+                ->execute()
+                ->fetchAll();
+
+            $matchedFrontendUsers = array_filter($frontendUsers, function($frontendUser) {
+                return GeneralUtility::cmpIP($this->authInfo['REMOTE_ADDR'], $frontendUser['ip_address']);
+            });
+            if (!empty($matchedFrontendUsers)) {
+                break;
+            }
+            array_pop($addressParts);
+        }
+
+        $matchedFrontendUser = array_shift($matchedFrontendUsers);
+        return $matchedFrontendUser ?? [];
+    }
+
+    protected function getPreparedQueryBuilderForFeUsers(): QueryBuilder
+    {
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('fe_users');
+        return $queryBuilder
+            ->select('*')
+            ->from('fe_users');
     }
 
     /**
      * Authenticate user as valid, if IP-Address matches RemoteHost
      *
-     * @param array $tempuser
+     * @param array $temporaryUser
      * @return int
      */
-    public function authUser(array $tempuser)
+    public function authUser(array $temporaryUser)
     {
         // this is an additional check against the IP-Address
         // just to be sure
-        if (GeneralUtility::cmpIP($this->authInfo['REMOTE_ADDR'], $tempuser['ip_address'])) {
+        if (GeneralUtility::cmpIP($this->authInfo['REMOTE_ADDR'], $temporaryUser['ip_address'])) {
             // 200 and above indicates a directly authenticated user with no further checks
             return 200;
         } else {
@@ -120,11 +180,6 @@ class IpAuthService extends AbstractService
         }
     }
 
-    /**
-     * Get TYPO3s Connection Pool
-     *
-     * @return ConnectionPool
-     */
     protected function getConnectionPool(): ConnectionPool
     {
         return GeneralUtility::makeInstance(ConnectionPool::class);
