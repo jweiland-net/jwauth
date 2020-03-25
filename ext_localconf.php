@@ -21,9 +21,9 @@ $GLOBALS['TYPO3_CONF_VARS']['SVCONF']['auth']['setup']['FE_alwaysFetchUser'] = t
         'description' => 'Login to FE with help of IP',
         'subtype' => 'getUserFE,authUserFE',
         'available' => true,
-        'priority' => 80,
+        'priority' => 70,
         // must be higher than \TYPO3\CMS\Sv\AuthenticationService (50) and rsaauth (60) but lower than OpenID (75)
-        'quality' => 80,
+        'quality' => 70,
         'os' => '',
         'exec' => '',
         'className' => \JWeiland\Jwauth\Service\IpAuthService::class
