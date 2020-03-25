@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+	<fe_users>
+		<uid>1</uid>
+		<pid>0</pid>
+		<tstamp>1366642540</tstamp>
+		<username>NoIP</username>
+		<password>$1$tCrlLajZ$C0sikFQQ3SWaFAZ1Me0Z/1</password> <!-- password -->
+		<disable>0</disable>
+		<starttime>0</starttime>
+		<endtime>0</endtime>
+		<crdate>1366642540</crdate>
+		<cruser_id>0</cruser_id>
+		<deleted>0</deleted>
+		<ip_address />
+	</fe_users>
+	<fe_users>
+		<uid>2</uid>
+		<pid>0</pid>
+		<tstamp>1366642540</tstamp>
+		<username>FullIPv4</username>
+		<password>$1$tCrlLajZ$C0sikFQQ3SWaFAZ1Me0Z/1</password> <!-- password -->
+		<disable>0</disable>
+		<starttime>0</starttime>
+		<endtime>0</endtime>
+		<crdate>1366642540</crdate>
+		<cruser_id>0</cruser_id>
+		<deleted>0</deleted>
+		<ip_address>192.168.100.123</ip_address>
+	</fe_users>
+	<fe_users>
+		<uid>3</uid>
+		<pid>0</pid>
+		<tstamp>1366642540</tstamp>
+		<username>PartialIPv4</username>
+		<password>$1$tCrlLajZ$C0sikFQQ3SWaFAZ1Me0Z/1</password> <!-- password -->
+		<disable>0</disable>
+		<starttime>0</starttime>
+		<endtime>0</endtime>
+		<crdate>1366642540</crdate>
+		<cruser_id>0</cruser_id>
+		<deleted>0</deleted>
+		<ip_address>192.168.54.*</ip_address>
+	</fe_users>
+	<fe_users>
+		<uid>4</uid>
+		<pid>0</pid>
+		<tstamp>1366642540</tstamp>
+		<username>VeryPartialIPv4</username>
+		<password>$1$tCrlLajZ$C0sikFQQ3SWaFAZ1Me0Z/1</password> <!-- password -->
+		<disable>0</disable>
+		<starttime>0</starttime>
+		<endtime>0</endtime>
+		<crdate>1366642540</crdate>
+		<cruser_id>0</cruser_id>
+		<deleted>0</deleted>
+		<ip_address>192.*.*.123</ip_address>
+	</fe_users>
+	<fe_users>
+		<uid>5</uid>
+		<pid>0</pid>
+		<tstamp>1366642540</tstamp>
+		<username>IPv6</username>
+		<password>$1$tCrlLajZ$C0sikFQQ3SWaFAZ1Me0Z/1</password> <!-- password -->
+		<disable>0</disable>
+		<starttime>0</starttime>
+		<endtime>0</endtime>
+		<crdate>1366642540</crdate>
+		<cruser_id>0</cruser_id>
+		<deleted>0</deleted>
+		<ip_address>2001:0db8:85a3:0000:0000:8a2e:0370:7334</ip_address>
+	</fe_users>
+	<fe_users>
+		<uid>6</uid>
+		<pid>0</pid>
+		<tstamp>1366642540</tstamp>
+		<username>PartlyIPv6</username>
+		<password>$1$tCrlLajZ$C0sikFQQ3SWaFAZ1Me0Z/1</password> <!-- password -->
+		<disable>0</disable>
+		<starttime>0</starttime>
+		<endtime>0</endtime>
+		<crdate>1366642540</crdate>
+		<cruser_id>0</cruser_id>
+		<deleted>0</deleted>
+		<ip_address>2001:0db8:85a3:8a2e:0370:7334:0000:0000/96</ip_address>
+	</fe_users>
+</dataset>
