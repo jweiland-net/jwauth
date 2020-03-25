@@ -22,6 +22,10 @@
 		"ext-libxml": "*",
 		"typo3/cms-core": "^8.7 || ^9.5"
 	},
+	"require-dev": {
+		"friendsofphp/php-cs-fixer": "^2.0",
+		"nimut/testing-framework": "^5.0"
+	},
 	"autoload": {
 		"psr-4": {
 			"JWeiland\\Jwauth\\": "Classes"
