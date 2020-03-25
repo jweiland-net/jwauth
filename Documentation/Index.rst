@@ -1,61 +1,58 @@
-﻿.. ==================================================
-.. FOR YOUR INFORMATION
-.. --------------------------------------------------
-.. -*- coding: utf-8 -*- with BOM.
-
 .. include:: Includes.txt
 
+
+.. Every manual should have a start label for cross-referencing to
+.. start page. Do not remove this!
 
 .. _start:
 
 =============================================================
-jwauth
+Events2
 =============================================================
 
 .. only:: html
 
-	:Classification:
-		jwauth
+   :Classification:
+      jwauth
 
-	:Version:
-		|0.1.0|
+   :Version:
+      |release|
 
-	:Language:
-		en
+   :Language:
+      en
 
-	:Description:
-		Manual covering TYPO3 extension jwauth
+   :Description:
+      Manual covering TYPO3 extension jwauth
 
-	:Keywords:
-		authentication,service,ip,login
+   :Keywords:
+      authentication, auth, jwauth, ip, ipv4, ipv6
 
-	:Copyright:
-		2015
+   :Copyright:
+      2012-2020
 
-	:Author:
-		Stefan Froemken
+   :Author:
+      Stefan Froemken
 
-	:Email:
-		projects@jweiland.net
+   :Email:
+      projects@jweiland.net
 
-	:License:
-		This document is published under the Open Content License
-		available from http://www.opencontent.org/opl.shtml
+   :License:
+      This document is published under the Open Publication License
+      available from http://www.opencontent.org/openpub/
 
-	:Rendered:
-		|13.04.2015|
+   :Rendered:
+      |today|
 
-	The content of this document is related to TYPO3,
-	a GNU/GPL CMS/Framework available from `www.typo3.org <http://www.typo3.org/>`_.
+   The content of this document is related to TYPO3,
+   a GNU/GPL CMS/Framework available from `www.typo3.org <https://typo3.org/>`__.
 
 
-	**Table of Contents**
+   **Table of Contents**
 
 .. toctree::
-	:maxdepth: 5
-	:titlesonly:
-	:glob:
+   :maxdepth: 3
 
-	Introduction/Index
-	Administrator/Index
-	Targets
+
+  Introduction/Index
+  Administrator/Index
+  Developer/Index

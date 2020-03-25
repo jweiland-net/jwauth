@@ -1,9 +1,4 @@
-﻿.. ==================================================
-.. FOR YOUR INFORMATION
-.. --------------------------------------------------
-.. -*- coding: utf-8 -*- with BOM.
-
-.. include:: ../Includes.txt
+﻿.. include:: ../Includes.txt
 
 
 .. _admin-manual:
@@ -45,5 +40,5 @@ Yes it is. It uses the comIP() method of GeneralUtility to validate and compare 
 What about "Logout"?
 ^^^^^^^^^^^^^^^^^^^^
 
-Ah yeah. That's funny? Users with matched IP addresses are authentificated with EACH request. You can't logout. So,
+Ah yeah. That's funny? Users with matched IP addresses are authenticated with EACH request. You can't logout. So,
 if you press "Logout" the page reloads, we have a new request and you're logged in again.

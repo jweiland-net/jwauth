@@ -1,9 +1,4 @@
-﻿.. ==================================================
-.. FOR YOUR INFORMATION
-.. --------------------------------------------------
-.. -*- coding: utf-8 -*- with BOM.
-
-.. include:: ../Includes.txt
+﻿.. include:: ../Includes.txt
 
 
 .. _developer:
@@ -20,11 +15,11 @@ Structure
 
 All classes are based on namespaces. So you can't use this extension on TYPO3 Versions below 6.0.
 
-We register this service with a priority of 80 and a quality of 80. With these values we are higher than the
-services of felogin, openID and saltedpasswords. So, if IP does not match, we give all the other services a try
+We register this service with a priority of 70 and a quality of 70. With these values we are higher than the
+services of felogin and saltedpasswords. So, if IP does not match, we give the other services a try
 to login the user.
 
-Example: userA will be logged in to frontend automatically, if he is online with the static IP address from his
+Example: user A will be logged in to frontend automatically, if he is online with the static IP address from his
 company. When userA is online at home the IP address will not match, but the userA has still the possibility to login
 via felogin or similar.
 
