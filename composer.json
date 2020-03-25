@@ -26,5 +26,10 @@
 		"psr-4": {
 			"JWeiland\\Jwauth\\": "Classes"
 		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"JWeiland\\Jwauth\\Tests": "Tests"
+		}
 	}
 }
