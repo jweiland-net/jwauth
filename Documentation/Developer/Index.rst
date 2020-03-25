@@ -19,9 +19,9 @@ We register this service with a priority of 70 and a quality of 70. With these v
 services of felogin and saltedpasswords. So, if IP does not match, we give the other services a try
 to login the user.
 
-Example: user A will be logged in to frontend automatically, if he is online with the static IP address from his
-company. When userA is online at home the IP address will not match, but the userA has still the possibility to login
-via felogin or similar.
+Example: User A will login to frontend automatically, if his IP address matches a fe_user record with same IP address.
+When User A is online at home the IP address will not match, but User A has still the possibility to login
+via felogin or similar authentication methods.
 
 Security
 --------
