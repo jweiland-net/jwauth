@@ -8,7 +8,8 @@ if (!defined('TYPO3_MODE')) {
     [
         'ip_address' => [
             'exclude' => true,
-            'label' => 'IP Address',
+            'label' => 'LLL:EXT:jwauth/Resources/Private/Language/locallang_db.xlf:fe_users.ip_address',
+            'description' => 'LLL:EXT:jwauth/Resources/Private/Language/locallang_db.xlf:fe_users.ip_address.description',
             'config' => [
                 'type' => 'input',
                 'eval' => 'trim'
