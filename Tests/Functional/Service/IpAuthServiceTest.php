@@ -1,23 +1,19 @@
 <?php
-namespace JWeiland\Jwauth\Tests\Functional\Service;
+
+declare(strict_types=1);
 
 /*
- * This file is part of the jwauth project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/jwauth.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace JWeiland\Jwauth\Tests\Functional\Service;
 
 use JWeiland\Jwauth\Service\IpAuthService;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use Prophecy\Prophecy\ObjectProphecy;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
 /**
@@ -52,29 +48,32 @@ class IpAuthServiceTest extends FunctionalTestCase
         'REMOTE_ADDR' => ''
     ];
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
+
         $this->frontendUserAuthenticationProphecy = $this->prophesize(FrontendUserAuthentication::class);
         $this->importDataSet(__DIR__ . '/../Fixtures/fe_users.xml');
+
         $this->subject = new IpAuthService();
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         unset(
             $this->subject,
             $this->frontendUserAuthenticationProphecy
         );
+
         parent::tearDown();
     }
 
     /**
      * @test
      */
-    public function initReturnsTrue()
+    public function initReturnsTrue(): void
     {
-        $this->assertTrue(
+        self::assertTrue(
             $this->subject->init()
         );
     }
@@ -82,9 +81,9 @@ class IpAuthServiceTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getUserReturnsEmptyArray()
+    public function getUserReturnsEmptyArray(): void
     {
-        $this->assertSame(
+        self::assertSame(
             [],
             $this->subject->getUser()
         );
@@ -93,7 +92,7 @@ class IpAuthServiceTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getUserWithNonMatchingIpAddressReturnsEmptyArray()
+    public function getUserWithNonMatchingIpAddressReturnsEmptyArray(): void
     {
         $authInfo = $this->authInfo;
         $authInfo['REMOTE_ADDR'] = '8.8.8.8';
@@ -104,7 +103,7 @@ class IpAuthServiceTest extends FunctionalTestCase
             $this->frontendUserAuthenticationProphecy->reveal()
         );
 
-        $this->assertSame(
+        self::assertSame(
             [],
             $this->subject->getUser()
         );
@@ -113,7 +112,7 @@ class IpAuthServiceTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getUserWithMatchingIpAddressReturnsUserArray()
+    public function getUserWithMatchingIpAddressReturnsUserArray(): void
     {
         $authInfo = $this->authInfo;
         $authInfo['REMOTE_ADDR'] = '192.168.100.123';
@@ -125,11 +124,11 @@ class IpAuthServiceTest extends FunctionalTestCase
         );
 
         $matchedUser = $this->subject->getUser();
-        $this->assertSame(
+        self::assertSame(
             2,
             $matchedUser['uid']
         );
-        $this->assertSame(
+        self::assertSame(
             'FullIPv4',
             $matchedUser['username']
         );
@@ -138,7 +137,7 @@ class IpAuthServiceTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getUserWithPartlyMatchingIpAddressReturnsUserArray()
+    public function getUserWithPartlyMatchingIpAddressReturnsUserArray(): void
     {
         $authInfo = $this->authInfo;
         $authInfo['REMOTE_ADDR'] = '192.168.54.24';
@@ -150,11 +149,11 @@ class IpAuthServiceTest extends FunctionalTestCase
         );
 
         $matchedUser = $this->subject->getUser();
-        $this->assertSame(
+        self::assertSame(
             3,
             $matchedUser['uid']
         );
-        $this->assertSame(
+        self::assertSame(
             'PartialIPv4',
             $matchedUser['username']
         );
@@ -163,7 +162,7 @@ class IpAuthServiceTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getUserWithVeryPartlyMatchingIpAddressReturnsUserArray()
+    public function getUserWithVeryPartlyMatchingIpAddressReturnsUserArray(): void
     {
         $authInfo = $this->authInfo;
         $authInfo['REMOTE_ADDR'] = '192.231.43.123';
@@ -175,11 +174,11 @@ class IpAuthServiceTest extends FunctionalTestCase
         );
 
         $matchedUser = $this->subject->getUser();
-        $this->assertSame(
+        self::assertSame(
             4,
             $matchedUser['uid']
         );
-        $this->assertSame(
+        self::assertSame(
             'VeryPartialIPv4',
             $matchedUser['username']
         );
@@ -188,7 +187,7 @@ class IpAuthServiceTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getUserWithMatchingIpv6AddressReturnsUserArray()
+    public function getUserWithMatchingIpv6AddressReturnsUserArray(): void
     {
         $authInfo = $this->authInfo;
         $authInfo['REMOTE_ADDR'] = '2001:0db8:85a3:0000:0000:8a2e:0370:7334';
@@ -200,11 +199,11 @@ class IpAuthServiceTest extends FunctionalTestCase
         );
 
         $matchedUser = $this->subject->getUser();
-        $this->assertSame(
+        self::assertSame(
             5,
             $matchedUser['uid']
         );
-        $this->assertSame(
+        self::assertSame(
             'IPv6',
             $matchedUser['username']
         );
@@ -213,7 +212,7 @@ class IpAuthServiceTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getUserWithPartlyMatchingIpv6AddressReturnsUserArray()
+    public function getUserWithPartlyMatchingIpv6AddressReturnsUserArray(): void
     {
         $authInfo = $this->authInfo;
         $authInfo['REMOTE_ADDR'] = '2001:0db8:85a3:8a2e:0370:7334:3481:a4b2';
@@ -225,11 +224,12 @@ class IpAuthServiceTest extends FunctionalTestCase
         );
 
         $matchedUser = $this->subject->getUser();
-        $this->assertSame(
+
+        self::assertSame(
             6,
             $matchedUser['uid']
         );
-        $this->assertSame(
+        self::assertSame(
             'PartlyIPv6',
             $matchedUser['username']
         );
