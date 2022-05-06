@@ -37,7 +37,7 @@
 	},
 	"autoload-dev": {
 		"psr-4": {
-			"JWeiland\\Jwauth\\Tests": "Tests"
+			"JWeiland\\Jwauth\\Tests\\": "Tests"
 		}
 	},
 	"config": {
