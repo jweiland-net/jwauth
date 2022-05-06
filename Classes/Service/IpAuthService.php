@@ -1,19 +1,15 @@
 <?php
+
 declare(strict_types = 1);
-namespace JWeiland\Jwauth\Service;
 
 /*
- * This file is part of the jwauth project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/jwauth.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace JWeiland\Jwauth\Service;
 
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
@@ -48,8 +44,6 @@ class IpAuthService extends AbstractService
 
     /**
      * Returns true, if Service is available
-     *
-     * @return bool
      */
     public function init(): bool
     {
@@ -68,7 +62,7 @@ class IpAuthService extends AbstractService
         array $loginData,
         array $authInfo,
         FrontendUserAuthentication $feUserAuth
-    ) {
+    ): void {
         $this->subType = $subType;
         $this->loginData = $loginData;
         $this->authInfo = $authInfo;
@@ -174,10 +168,10 @@ class IpAuthService extends AbstractService
         if (GeneralUtility::cmpIP($this->authInfo['REMOTE_ADDR'], $temporaryUser['ip_address'])) {
             // 200 and above indicates a directly authenticated user with no further checks
             return 200;
-        } else {
-            // 0 indicates NOT logged in. 100 indicates NOT logged in, but further services can still try to authenticate the user
-            return 100;
         }
+
+        // 0 indicates NOT logged in. 100 indicates NOT logged in, but further services can still try to authenticate the user
+        return 100;
     }
 
     protected function getConnectionPool(): ConnectionPool
