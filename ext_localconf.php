@@ -30,5 +30,6 @@ $GLOBALS['TYPO3_CONF_VARS']['SVCONF']['auth']['setup']['FE_alwaysFetchUser'] = t
     ]
 );
 
-// Delete saved session data from fe_users_session
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['hook_eofe'][] = \JWeiland\Jwauth\FeUser::class . '->clearFeUserSession';
+// Delete saved session data from fe_users session
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['hook_eofe']['EXT:jwauth']
+    = \JWeiland\Jwauth\FeUser::class . '->clearFeUserSession';
