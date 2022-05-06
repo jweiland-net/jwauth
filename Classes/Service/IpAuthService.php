@@ -127,13 +127,14 @@ class IpAuthService extends AbstractService
                         'ip_address',
                         $queryBuilder->createNamedParameter(
                             implode($divider, $addressParts) . '%',
-                            \PDO::PARAM_STR)
+                            \PDO::PARAM_STR
+                        )
                     )
                 )
                 ->execute()
                 ->fetchAll();
 
-            $matchedFrontendUsers = array_filter($frontendUsers, function($frontendUser) {
+            $matchedFrontendUsers = array_filter($frontendUsers, function ($frontendUser) {
                 return GeneralUtility::cmpIP($this->authInfo['REMOTE_ADDR'], $frontendUser['ip_address']);
             });
             if (!empty($matchedFrontendUsers)) {
