@@ -71,22 +71,21 @@ class IpAuthService extends AbstractService
 
     /**
      * Get fe_user with given IP-Address
-     *
-     * @return array Empty array, if user was not found
      */
-    public function getUser(): array
+    public function getUser(): ?array
     {
         $remoteAddress = htmlspecialchars(strip_tags($this->authInfo['REMOTE_ADDR'] ?? ''));
-        if (empty($remoteAddress)) {
+        if ($remoteAddress === '') {
             // Do not try to fetch one of all fe_users where no IP address is assigned
             return [];
         }
 
         $bestMatchingUser = $this->getBestMatchingUser($remoteAddress);
-        if (empty($bestMatchingUser)) {
+        if ($bestMatchingUser === []) {
             $bestMatchingUser = $this->getBestPartlyMatchingUser($remoteAddress);
         }
-        return $bestMatchingUser;
+
+        return $bestMatchingUser ?: null;
     }
 
     public function getBestMatchingUser(string $remoteAddress): array
@@ -157,11 +156,8 @@ class IpAuthService extends AbstractService
 
     /**
      * Authenticate user as valid, if IP-Address matches RemoteHost
-     *
-     * @param array $temporaryUser
-     * @return int
      */
-    public function authUser(array $temporaryUser)
+    public function authUser(array $temporaryUser): int
     {
         // this is an additional check against the IP-Address
         // just to be sure
