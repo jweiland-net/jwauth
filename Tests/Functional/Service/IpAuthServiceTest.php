@@ -95,7 +95,7 @@ class IpAuthServiceTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getUserWithNonMatchingIpAddressReturnsEmptyArray(): void
+    public function getUserWithNonMatchingIpAddressReturnsNull(): void
     {
         $authInfo = $this->authInfo;
         $authInfo['REMOTE_ADDR'] = '8.8.8.8';
@@ -106,8 +106,7 @@ class IpAuthServiceTest extends FunctionalTestCase
             $this->frontendUserAuthenticationProphecy->reveal()
         );
 
-        self::assertSame(
-            [],
+        self::assertNull(
             $this->subject->getUser()
         );
     }
