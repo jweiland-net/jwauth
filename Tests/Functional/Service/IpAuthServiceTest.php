@@ -13,6 +13,7 @@ namespace JWeiland\Jwauth\Tests\Functional\Service;
 
 use JWeiland\Jwauth\Service\IpAuthService;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
@@ -21,6 +22,8 @@ use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
  */
 class IpAuthServiceTest extends FunctionalTestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var IpAuthService
      */
