@@ -67,9 +67,6 @@ jobs:
       - name: Lint PHP
         run: composer ci:php:lint
 
-      - name: Unit Tests
-        run: php .build/vendor/bin/phpunit -c .build/vendor/nimut/testing-framework/res/Configuration/UnitTests.xml Tests/Unit
-
       - name: Functional Tests
         env:
           typo3DatabaseName: test
