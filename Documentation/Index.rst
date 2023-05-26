@@ -1,58 +1,55 @@
-.. include:: Includes.txt
+..  include:: /Includes.rst.txt
 
-
-.. Every manual should have a start label for cross-referencing to
-.. start page. Do not remove this!
 
 .. _start:
 
-=============================================================
-Events2
-=============================================================
+=======
+JW Auth
+=======
 
-.. only:: html
+:Extension key:
+    jwauth
 
-   :Classification:
-      jwauth
+:Package name:
+    jweiland/jwauth
 
-   :Version:
-      |release|
+:Version:
+    |release|
 
-   :Language:
-      en
+:Language:
+    en
 
-   :Description:
-      Manual covering TYPO3 extension jwauth
+:Author:
+    Stefan Froemken
 
-   :Keywords:
-      authentication, auth, jwauth, ip, ipv4, ipv6
+:License:
+    This document is published under the
+    `Creative Commons BY 4.0 <https://creativecommons.org/licenses/by/4.0/>`__
+    license.
 
-   :Copyright:
-      2012-2020
+:Rendered:
+    |today|
 
-   :Author:
-      Stefan Froemken
+----
 
-   :Email:
-      projects@jweiland.net
+Login to TYPO3 backend with your static IP address
 
-   :License:
-      This document is published under the Open Publication License
-      available from http://www.opencontent.org/openpub/
+----
 
-   :Rendered:
-      |today|
+**Table of Contents:**
 
-   The content of this document is related to TYPO3,
-   a GNU/GPL CMS/Framework available from `www.typo3.org <https://typo3.org/>`__.
+..  toctree::
+    :maxdepth: 2
+    :titlesonly:
 
+    Introduction/Index
+    Administrator/Index
+    Developer/Index
 
-   **Table of Contents**
+..  Meta Menu
 
-.. toctree::
-   :maxdepth: 3
+..  toctree::
+    :hidden:
 
-
-  Introduction/Index
-  Administrator/Index
-  Developer/Index
+    Sitemap
+    genindex
