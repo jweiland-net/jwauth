@@ -32,7 +32,7 @@ JW Auth
 
 ----
 
-Login to TYPO3 backend with your static IP address
+Login to TYPO3 frontend with your static IP address
 
 ----
 
