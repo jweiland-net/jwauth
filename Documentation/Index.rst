@@ -44,8 +44,9 @@ Login to TYPO3 frontend with your static IP address
 
     Introduction/Index
     Installation/Index
-    Administrator/Index
+    Configuration/Index
     Developer/Index
+    FAQ/Index
 
 ..  Meta Menu
 
