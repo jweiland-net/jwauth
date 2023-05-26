@@ -11,65 +11,19 @@ declare(strict_types=1);
 
 namespace JWeiland\Jwauth\Service;
 
+use Doctrine\DBAL\DBALException;
 use JWeiland\Jwauth\Traits\ConnectionPoolTrait;
+use TYPO3\CMS\Core\Authentication\AbstractAuthenticationService;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
-use TYPO3\CMS\Core\Service\AbstractService;
+use TYPO3\CMS\Core\Database\Query\Restriction\FrontendRestrictionContainer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
 /**
  * Authenticate FE User against its IP address
  */
-class IpAuthService extends AbstractService
+class IpAuthService extends AbstractAuthenticationService
 {
     use ConnectionPoolTrait;
-
-    /**
-     * @var string
-     */
-    protected $subType = '';
-
-    /**
-     * @var string
-     */
-    protected $loginData = '';
-
-    /**
-     * @var array
-     */
-    protected $authInfo = [];
-
-    /**
-     * @var FrontendUserAuthentication
-     */
-    protected $feUserAuth;
-
-    /**
-     * Returns true, if Service is available
-     */
-    public function init(): bool
-    {
-        // @ToDo: Add some checks
-        return true;
-    }
-
-    /**
-     * @param string $subType
-     * @param array $loginData
-     * @param array $authInfo
-     * @param FrontendUserAuthentication $feUserAuth
-     */
-    public function initAuth(
-        string $subType,
-        array $loginData,
-        array $authInfo,
-        FrontendUserAuthentication $feUserAuth
-    ): void {
-        $this->subType = $subType;
-        $this->loginData = $loginData;
-        $this->authInfo = $authInfo;
-        $this->feUserAuth = $feUserAuth;
-    }
 
     /**
      * Get fe_user with given IP-Address
@@ -78,7 +32,7 @@ class IpAuthService extends AbstractService
     {
         $remoteAddress = htmlspecialchars(strip_tags($this->authInfo['REMOTE_ADDR'] ?? ''));
         if ($remoteAddress === '') {
-            // Do not try to fetch one of all fe_users where no IP address is assigned
+            // Skip login if remote address does not deliver an IP address.
             return [];
         }
 
@@ -90,71 +44,73 @@ class IpAuthService extends AbstractService
         return $bestMatchingUser ?: null;
     }
 
-    public function getBestMatchingUser(string $remoteAddress): array
+    private function getBestMatchingUser(string $remoteAddress): array
     {
         $queryBuilder = $this->getPreparedQueryBuilderForFeUsers();
-        $frontendUser = $queryBuilder
-            ->where(
-                $queryBuilder->expr()->eq(
-                    'ip_address',
-                    $queryBuilder->createNamedParameter($remoteAddress, \PDO::PARAM_STR)
+        try {
+            $frontendUser = $queryBuilder
+                ->where(
+                    $queryBuilder->expr()->eq(
+                        'ip_address',
+                        $queryBuilder->createNamedParameter($remoteAddress)
+                    )
                 )
-            )
-            ->execute()
-            ->fetch();
+                ->executeQuery()
+                ->fetchAssociative();
 
-        if ($frontendUser === false) {
+            if ($frontendUser === false) {
+                $frontendUser = [];
+            }
+        } catch (DBALException | \Exception $exception) {
             $frontendUser = [];
         }
+
 
         return $frontendUser;
     }
 
-    public function getBestPartlyMatchingUser(string $remoteAddress): array
+    private function getBestPartlyMatchingUser(string $remoteAddress): array
     {
         $isIPv6 = (bool)strpos($remoteAddress, ':');
         $divider = $isIPv6 ? ':' : '.';
+
         $matchedFrontendUsers = [];
         $addressParts = GeneralUtility::trimExplode($divider, $remoteAddress);
         array_pop($addressParts);
         $queryBuilder = $this->getPreparedQueryBuilderForFeUsers();
         while ($addressParts) {
-            $frontendUsers = $queryBuilder
-                ->where(
-                    $queryBuilder->expr()->neq(
-                        'ip_address',
-                        $queryBuilder->createNamedParameter('', \PDO::PARAM_STR)
-                    ),
-                    $queryBuilder->expr()->like(
-                        'ip_address',
-                        $queryBuilder->createNamedParameter(
-                            implode($divider, $addressParts) . '%',
-                            \PDO::PARAM_STR
+            try {
+                $frontendUsers = $queryBuilder
+                    ->where(
+                        $queryBuilder->expr()->neq(
+                            'ip_address',
+                            $queryBuilder->createNamedParameter('')
+                        ),
+                        $queryBuilder->expr()->like(
+                            'ip_address',
+                            $queryBuilder->createNamedParameter(implode($divider, $addressParts) . '%')
                         )
                     )
-                )
-                ->execute()
-                ->fetchAll();
+                    ->executeQuery()
+                    ->fetchAllAssociative();
+            } catch (DBALException | \Exception $exception) {
+                $frontendUsers = [];
+            }
 
-            $matchedFrontendUsers = array_filter($frontendUsers, function ($frontendUser) {
+            $matchedFrontendUsers = array_filter($frontendUsers, static function ($frontendUser): bool {
                 return GeneralUtility::cmpIP($this->authInfo['REMOTE_ADDR'], $frontendUser['ip_address']);
             });
+
             if (!empty($matchedFrontendUsers)) {
                 break;
             }
+
             array_pop($addressParts);
         }
 
         $matchedFrontendUser = array_shift($matchedFrontendUsers);
-        return $matchedFrontendUser ?? [];
-    }
 
-    protected function getPreparedQueryBuilderForFeUsers(): QueryBuilder
-    {
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('fe_users');
-        return $queryBuilder
-            ->select('*')
-            ->from('fe_users');
+        return $matchedFrontendUser ?? [];
     }
 
     /**
@@ -171,5 +127,15 @@ class IpAuthService extends AbstractService
 
         // 0 indicates NOT logged in. 100 indicates NOT logged in, but further services can still try to authenticate the user
         return 100;
+    }
+
+    private function getPreparedQueryBuilderForFeUsers(): QueryBuilder
+    {
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('fe_users');
+        $queryBuilder->setRestrictions(GeneralUtility::makeInstance(FrontendRestrictionContainer::class));
+
+        return $queryBuilder
+            ->select('*')
+            ->from('fe_users');
     }
 }
