@@ -1,7 +1,7 @@
 {
 	"name": "jweiland/jwauth",
 	"type": "typo3-cms-extension",
-	"description": "Login to TYPO3 backend with your static IP address",
+	"description": "Login to TYPO3 frontend with your static IP address",
 	"license": "GPL-2.0-or-later",
 	"keywords": ["typo3", "TYPO3 CMS", "auth", "login"],
 	"homepage": "https://jweiland.net",

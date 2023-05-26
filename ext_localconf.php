@@ -1,6 +1,6 @@
 <?php
 if (!defined('TYPO3_MODE')) {
-    die ('Access denied.');
+    die('Access denied.');
 }
 
 // Check login with each Request
@@ -27,7 +27,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SVCONF']['auth']['setup']['FE_alwaysFetchUser'] = t
         'quality' => 70,
         'os' => '',
         'exec' => '',
-        'className' => \JWeiland\Jwauth\Service\IpAuthService::class
+        'className' => \JWeiland\Jwauth\Service\IpAuthService::class,
     ]
 );
 
