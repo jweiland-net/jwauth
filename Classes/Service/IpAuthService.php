@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Jwauth\Service;
 
-use TYPO3\CMS\Core\Database\ConnectionPool;
+use JWeiland\Jwauth\Traits\ConnectionPoolTrait;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Service\AbstractService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -22,6 +22,8 @@ use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
  */
 class IpAuthService extends AbstractService
 {
+    use ConnectionPoolTrait;
+
     /**
      * @var string
      */
@@ -169,10 +171,5 @@ class IpAuthService extends AbstractService
 
         // 0 indicates NOT logged in. 100 indicates NOT logged in, but further services can still try to authenticate the user
         return 100;
-    }
-
-    protected function getConnectionPool(): ConnectionPool
-    {
-        return GeneralUtility::makeInstance(ConnectionPool::class);
     }
 }

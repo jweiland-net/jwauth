@@ -11,8 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Jwauth;
 
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use JWeiland\Jwauth\Traits\ConnectionPoolTrait;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
@@ -22,6 +21,8 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  */
 class FeUser
 {
+    use ConnectionPoolTrait;
+
     /**
      * Clear fe_user session data
      */
@@ -43,10 +44,5 @@ class FeUser
                 ]
             );
         }
-    }
-
-    protected function getConnectionPool(): ConnectionPool
-    {
-        return GeneralUtility::makeInstance(ConnectionPool::class);
     }
 }
