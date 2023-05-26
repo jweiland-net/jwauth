@@ -1,5 +1,6 @@
 <?php
-if (!defined('TYPO3_MODE')) {
+
+if (!defined('TYPO3')) {
     die('Access denied.');
 }
 
@@ -12,7 +13,7 @@ if (!defined('TYPO3_MODE')) {
             'description' => 'LLL:EXT:jwauth/Resources/Private/Language/locallang_db.xlf:fe_users.ip_address.description',
             'config' => [
                 'type' => 'input',
-                'eval' => 'trim'
+                'eval' => 'trim',
             ],
         ],
     ]

@@ -40,7 +40,7 @@ class FeUser
             $connection->delete(
                 'fe_sessions',
                 [
-                    'ses_id' => $tsfe->fe_user->id
+                    'ses_id' => $tsfe->fe_user->id,
                 ]
             );
         }

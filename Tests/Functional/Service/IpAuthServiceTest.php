@@ -12,51 +12,39 @@ declare(strict_types=1);
 namespace JWeiland\Jwauth\Tests\Functional\Service;
 
 use JWeiland\Jwauth\Service\IpAuthService;
-use Nimut\TestingFramework\TestCase\FunctionalTestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
-use Prophecy\Prophecy\ObjectProphecy;
+use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
+use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
  * Functional test for IpAuthService
  */
 class IpAuthServiceTest extends FunctionalTestCase
 {
-    use ProphecyTrait;
+    protected IpAuthService $subject;
 
     /**
-     * @var IpAuthService
+     * @var FrontendUserAuthentication|MockObject
      */
-    protected $subject;
+    protected $frontendUserAuthenticationMock;
 
-    /**
-     * @var FrontendUserAuthentication|ObjectProphecy
-     */
-    protected $frontendUserAuthenticationProphecy;
-
-    /**
-     * @var array
-     */
-    protected $testExtensionsToLoad = [
-        'typo3conf/ext/jwauth'
+    protected array $testExtensionsToLoad = [
+        'typo3conf/ext/jwauth',
     ];
 
-    /**
-     * @var array
-     */
-    protected $authInfo = [
+    protected array $authInfo = [
         'db_user' => [
-            'check_pid_clause' => 'deleted = 0'
+            'check_pid_clause' => 'deleted = 0',
         ],
-        'REMOTE_ADDR' => ''
+        'REMOTE_ADDR' => '',
     ];
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->frontendUserAuthenticationProphecy = $this->prophesize(FrontendUserAuthentication::class);
-        $this->importDataSet(__DIR__ . '/../Fixtures/fe_users.xml');
+        $this->frontendUserAuthenticationMock = $this->createMock(FrontendUserAuthentication::class);
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/fe_users.csv');
 
         $this->subject = new IpAuthService();
     }
@@ -65,7 +53,7 @@ class IpAuthServiceTest extends FunctionalTestCase
     {
         unset(
             $this->subject,
-            $this->frontendUserAuthenticationProphecy
+            $this->frontendUserAuthenticationMock
         );
 
         parent::tearDown();
@@ -103,7 +91,7 @@ class IpAuthServiceTest extends FunctionalTestCase
             '',
             [],
             $authInfo,
-            $this->frontendUserAuthenticationProphecy->reveal()
+            $this->frontendUserAuthenticationMock
         );
 
         self::assertNull(
@@ -122,7 +110,7 @@ class IpAuthServiceTest extends FunctionalTestCase
             '',
             [],
             $authInfo,
-            $this->frontendUserAuthenticationProphecy->reveal()
+            $this->frontendUserAuthenticationMock
         );
 
         $matchedUser = $this->subject->getUser();
@@ -147,7 +135,7 @@ class IpAuthServiceTest extends FunctionalTestCase
             '',
             [],
             $authInfo,
-            $this->frontendUserAuthenticationProphecy->reveal()
+            $this->frontendUserAuthenticationMock
         );
 
         $matchedUser = $this->subject->getUser();
@@ -172,7 +160,7 @@ class IpAuthServiceTest extends FunctionalTestCase
             '',
             [],
             $authInfo,
-            $this->frontendUserAuthenticationProphecy->reveal()
+            $this->frontendUserAuthenticationMock
         );
 
         $matchedUser = $this->subject->getUser();
@@ -197,7 +185,7 @@ class IpAuthServiceTest extends FunctionalTestCase
             '',
             [],
             $authInfo,
-            $this->frontendUserAuthenticationProphecy->reveal()
+            $this->frontendUserAuthenticationMock
         );
 
         $matchedUser = $this->subject->getUser();
@@ -222,7 +210,7 @@ class IpAuthServiceTest extends FunctionalTestCase
             '',
             [],
             $authInfo,
-            $this->frontendUserAuthenticationProphecy->reveal()
+            $this->frontendUserAuthenticationMock
         );
 
         $matchedUser = $this->subject->getUser();
