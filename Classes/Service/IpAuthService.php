@@ -96,8 +96,9 @@ class IpAuthService extends AbstractAuthenticationService
                 $frontendUsers = [];
             }
 
-            $matchedFrontendUsers = array_filter($frontendUsers, static function ($frontendUser): bool {
-                return GeneralUtility::cmpIP($this->authInfo['REMOTE_ADDR'], $frontendUser['ip_address']);
+            $remoteAddress = $this->authInfo['REMOTE_ADDR'];
+            $matchedFrontendUsers = array_filter($frontendUsers, static function ($frontendUser) use ($remoteAddress): bool {
+                return GeneralUtility::cmpIP($remoteAddress, $frontendUser['ip_address']);
             });
 
             if (!empty($matchedFrontendUsers)) {
