@@ -43,6 +43,7 @@ Login to TYPO3 backend with your static IP address
     :titlesonly:
 
     Introduction/Index
+    Installation/Index
     Administrator/Index
     Developer/Index
 
