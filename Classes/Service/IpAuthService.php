@@ -65,7 +65,6 @@ class IpAuthService extends AbstractAuthenticationService
             $frontendUser = [];
         }
 
-
         return $frontendUser;
     }
 

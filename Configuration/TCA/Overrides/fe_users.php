@@ -12,7 +12,7 @@ if (!defined('TYPO3')) {
             'description' => 'LLL:EXT:jwauth/Resources/Private/Language/locallang_db.xlf:fe_users.ip_address.description',
             'config' => [
                 'type' => 'input',
-                'eval' => 'trim'
+                'eval' => 'trim',
             ],
         ],
     ]
