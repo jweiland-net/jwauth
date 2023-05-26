@@ -12,12 +12,12 @@ jobs:
 
       matrix:
         typo3: [^11.5, ^12.4]
-        php: ['8.0']
+        php: ['8.1']
         include:
           - typo3: ^11.5
             php: '7.4'
-          - typo3: ^12.4
-            php: '8.1'
+          - typo3: ^11.5
+            php: '8.0'
 
     services:
       mysql:
