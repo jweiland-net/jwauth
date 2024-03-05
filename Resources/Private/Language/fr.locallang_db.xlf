@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<xliff version="1.0">
+  <file source-language="en" datatype="plaintext" original="messages" date="2020-03-25T15:20:40Z" product-name="jwauth" target-language="fr">
+    <header/>
+    <body>
+      <trans-unit id="fe_users.ip_address">
+        <source>IP Address</source>
+        <target state="needs-translation">IP Address</target>
+      </trans-unit>
+      <trans-unit id="fe_users.ip_address.description">
+        <source>We prefer to insert the full IPv4 or IPv6 address here. You can use * to mask IPv4 addresses: 192.168.*.*. In case of partly IPv6 addresses you have to insert the full address including mask: 2001:0db8:85a3:8a2e:0370:7334:0000:0000/96. If you don't add the mask we will use 128 which means: the complete IPv6 has to match.</source>
+        <target state="needs-translation">We prefer to insert the full IPv4 or IPv6 address here. You can use * to mask IPv4 addresses: 192.168.*.*. In case of partly IPv6 addresses you have to insert the full address including mask: 2001:0db8:85a3:8a2e:0370:7334:0000:0000/96. If you don't add the mask we will use 128 which means: the complete IPv6 has to match.</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
