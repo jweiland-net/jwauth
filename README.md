@@ -32,3 +32,9 @@ Download and install `jwauth` with the extension manager module.
 
 1) Install and activate `jwauth`
 2) Add your static IP address to the user record
+
+## 3 Support
+
+Free Support is available via [GitHub Issue Tracker](https://github.com/jweiland-net/jwauth/issues).
+
+For commercial support, please contact us at [support@jweiland.net](support@jweiland.net).
