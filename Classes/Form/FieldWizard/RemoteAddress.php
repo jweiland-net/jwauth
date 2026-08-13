@@ -11,28 +11,37 @@ declare(strict_types=1);
 
 namespace JWeiland\Jwauth\Form\FieldWizard;
 
+use JWeiland\Jwauth\Service\RemoteAddressDetector;
 use TYPO3\CMS\Backend\Form\AbstractNode;
 use TYPO3\CMS\Core\Localization\LanguageService;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Shows the REMOTE_ADDR TYPO3 currently resolves for the visitor below the
- * IP address field. Helpful, as e.g. reverse proxies or local Docker setups
- * let $_SERVER['REMOTE_ADDR'] differ heavily from the address a user should
- * configure in ip_addresses/ip_address.
+ * Shows the remote address TYPO3 currently resolves for the visitor below
+ * the IP address field. Helpful, as e.g. reverse proxies or local Docker
+ * setups let $_SERVER['REMOTE_ADDR'] differ heavily from the address a user
+ * should configure in ip_addresses/ip_address.
  */
 class RemoteAddress extends AbstractNode
 {
+    public function __construct(
+        private readonly RemoteAddressDetector $remoteAddressDetector,
+    ) {}
+
     public function render(): array
     {
         $result = $this->initializeResultArray();
 
-        $label = $this->getLanguageService()->sL(
-            'LLL:EXT:jwauth/Resources/Private/Language/locallang_db.xlf:fieldWizard.remoteAddress',
-        );
-        $remoteAddress = htmlspecialchars(strip_tags(GeneralUtility::getIndpEnv('REMOTE_ADDR')));
+        $detectedAddress = $this->remoteAddressDetector->detect();
+        if ($detectedAddress === null) {
+            return $result;
+        }
 
-        $result['html'] = '<div class="form-text">' . htmlspecialchars($label) . ' <code>' . $remoteAddress . '</code></div>';
+        $label = sprintf(
+            $this->getLanguageService()->sL('LLL:EXT:jwauth/Resources/Private/Language/locallang_db.xlf:fieldWizard.remoteAddress'),
+            $detectedAddress['version'],
+        );
+
+        $result['html'] = '<div class="form-text">' . htmlspecialchars($label) . ' <code>' . htmlspecialchars($detectedAddress['address']) . '</code></div>';
 
         return $result;
     }

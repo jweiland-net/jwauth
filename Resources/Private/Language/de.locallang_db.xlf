@@ -28,8 +28,8 @@
 				<target>Wir empfehlen die vollständige IP Adresse einzutragen. Für IPv4 Adressen kann * für die Maskierung verwendet werden: 192.168.*.*. Bei Verwendung von IPv6 muss immer die vollständige IPv6 Adresse eingetragen werden inkl. Mask: 2001:0db8:85a3:8a2e:0370:7334:0000:0000/96. Wenn die Mask nicht mit angegeben wird, dann verwenden wir 128, was die Überprüfung der vollständigen IPv6 zur Folge hat.</target>
 			</trans-unit>
 			<trans-unit id="fieldWizard.remoteAddress">
-				<source>TYPO3 currently detects this remote address for you:</source>
-				<target>TYPO3 erkennt aktuell folgende Remote-Adresse für dich:</target>
+				<source>TYPO3 currently detects this %s address for you:</source>
+				<target>TYPO3 erkennt aktuell folgende %s-Adresse für dich:</target>
 			</trans-unit>
 			<trans-unit id="valuePicker.detectedIpv4Address">
 				<source>Detected IPv4 address: %s</source>
