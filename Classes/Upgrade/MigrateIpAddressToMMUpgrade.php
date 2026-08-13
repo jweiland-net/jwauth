@@ -20,7 +20,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Install\Attribute\UpgradeWizard;
 use TYPO3\CMS\Install\Updates\ChattyInterface;
 use TYPO3\CMS\Install\Updates\DatabaseUpdatedPrerequisite;
-use TYPO3\CMS\Install\Updates\RepeatableInterface;
 use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
 
 /**
@@ -28,7 +27,7 @@ use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
  * tx_jwauth_domain_model_ipaddress table and its MM relation.
  */
 #[UpgradeWizard('jwauth_migrateIpAddress')]
-final class MigrateIpAddressToMMUpgrade implements ChattyInterface, RepeatableInterface, UpgradeWizardInterface
+final class MigrateIpAddressToMMUpgrade implements ChattyInterface, UpgradeWizardInterface
 {
     private ?OutputInterface $output = null;
 
