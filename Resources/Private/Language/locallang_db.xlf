@@ -24,6 +24,12 @@
 			<trans-unit id="fieldWizard.remoteAddress">
 				<source>TYPO3 currently detects this remote address for you:</source>
 			</trans-unit>
+			<trans-unit id="valuePicker.detectedIpv4Address">
+				<source>Detected IPv4 address: %s</source>
+			</trans-unit>
+			<trans-unit id="valuePicker.detectedIpv6Address">
+				<source>Detected IPv6 address: %s</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

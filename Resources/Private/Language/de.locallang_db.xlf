@@ -31,6 +31,14 @@
 				<source>TYPO3 currently detects this remote address for you:</source>
 				<target>TYPO3 erkennt aktuell folgende Remote-Adresse für dich:</target>
 			</trans-unit>
+			<trans-unit id="valuePicker.detectedIpv4Address">
+				<source>Detected IPv4 address: %s</source>
+				<target>Erkannte IPv4 Adresse: %s</target>
+			</trans-unit>
+			<trans-unit id="valuePicker.detectedIpv6Address">
+				<source>Detected IPv6 address: %s</source>
+				<target>Erkannte IPv6 Adresse: %s</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

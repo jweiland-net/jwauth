@@ -8,7 +8,9 @@
  */
 
 use JWeiland\Jwauth\Form\FieldWizard\RemoteAddress;
+use JWeiland\Jwauth\Form\FormDataProvider\AddDetectedIpAddressesToValuePicker;
 use JWeiland\Jwauth\Service\IpAuthService;
+use TYPO3\CMS\Backend\Form\FormDataProvider\TcaColumnsProcessShowitem;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 if (!defined('TYPO3')) {
@@ -24,6 +26,13 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][1755000000] = [
     'nodeName' => 'remoteAddress',
     'priority' => 40,
     'class' => RemoteAddress::class,
+];
+
+// Suggest the currently detected remote address(es) in the ip_address valuePicker.
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['formDataGroup']['tcaDatabaseRecord'][AddDetectedIpAddressesToValuePicker::class] = [
+    'depends' => [
+        TcaColumnsProcessShowitem::class,
+    ],
 ];
 
 // Following line allows us to fetch the user data from Session instead of Database.
