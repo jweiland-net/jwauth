@@ -3,6 +3,9 @@
 	<file source-language="en" datatype="plaintext" original="messages" date="2020-03-25T15:20:40Z" product-name="jwauth">
 		<header/>
 		<body>
+			<trans-unit id="tabs.jwauth">
+				<source>Authorization</source>
+			</trans-unit>
 			<trans-unit id="fe_users.ip_addresses">
 				<source>IP Addresses</source>
 			</trans-unit>

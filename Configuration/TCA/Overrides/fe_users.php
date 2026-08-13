@@ -44,5 +44,5 @@ ExtensionManagementUtility::addTCAcolumns(
 
 ExtensionManagementUtility::addToAllTCAtypes(
     'fe_users',
-    'ip_addresses',
+    '--div--;LLL:EXT:jwauth/Resources/Private/Language/locallang_db.xlf:tabs.jwauth,ip_addresses',
 );
