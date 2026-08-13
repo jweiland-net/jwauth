@@ -16,6 +16,8 @@ return [
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
         'delete' => 'deleted',
+        'adminOnly' => true,
+        'rootLevel' => 1,
         'enablecolumns' => [
             'disabled' => 'hidden',
         ],

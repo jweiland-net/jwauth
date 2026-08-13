@@ -77,7 +77,7 @@ final class MigrateIpAddressToMMUpgrade implements ChattyInterface, RepeatableIn
     public function executeUpdate(): bool
     {
         $queryResult = $this->getUnmigratedRecordsQueryBuilder()
-            ->select('fe_users.uid', 'fe_users.pid', 'fe_users.ip_address')
+            ->select('fe_users.uid', 'fe_users.ip_address')
             ->executeQuery();
 
         $ipAddressConnection = $this->connectionPool->getConnectionForTable('tx_jwauth_domain_model_ipaddress');
@@ -87,7 +87,9 @@ final class MigrateIpAddressToMMUpgrade implements ChattyInterface, RepeatableIn
             $ipAddressConnection->insert(
                 'tx_jwauth_domain_model_ipaddress',
                 [
-                    'pid' => (int)$feUser['pid'],
+                    // tx_jwauth_domain_model_ipaddress is rootLevel-only, so pid must be 0
+                    // regardless of the fe_user's own storage folder.
+                    'pid' => 0,
                     'ip_address' => (string)$feUser['ip_address'],
                 ],
             );
