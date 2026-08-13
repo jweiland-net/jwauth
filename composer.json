@@ -18,16 +18,14 @@
 		"source": "https://github.com/jweiland-net/jwauth"
 	},
 	"require": {
-		"typo3/cms-core": "^13.4"
+		"typo3/cms-core": "^14.3"
 	},
 	"require-dev": {
-		"phpunit/phpunit": "^11.2",
-		"typo3/cms-install": "^13.4",
+		"ergebnis/composer-normalize": "^2.44",
+		"ssch/typo3-rector": "^3.6",
+		"typo3/cms-install": "^14.3",
 		"typo3/coding-standards": "^0.8",
-		"typo3/testing-framework": "^9.1"
-	},
-	"replace": {
-		"typo3-ter/jwauth": "self.version"
+		"typo3/testing-framework": "^9.5.0"
 	},
 	"autoload": {
 		"psr-4": {
@@ -40,18 +38,22 @@
 		}
 	},
 	"config": {
-		"vendor-dir": ".Build/vendor",
-		"bin-dir": ".Build/bin",
-		"sort-packages": true,
 		"allow-plugins": {
+			"ergebnis/composer-normalize": true,
 			"typo3/class-alias-loader": true,
 			"typo3/cms-composer-installers": true
-		}
+		},
+		"bin-dir": ".Build/bin",
+		"vendor-dir": ".Build/vendor"
 	},
 	"extra": {
 		"typo3/cms": {
+			"Package": {
+				"providesPackages": {}
+			},
 			"extension-key": "jwauth",
-			"web-dir": ".Build/web"
+			"version": "6.0.0",
+			"web-dir": ".Build/public"
 		}
 	}
 }
