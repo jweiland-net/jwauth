@@ -1,0 +1,12 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  JWeiland\Jwauth\:
+    resource: '../Classes/*'
+
+  # Called by makeInstance in GeneralUtility::makeInstanceService() (sv authentication service registry)
+  JWeiland\Jwauth\Service\IpAuthService:
+    public: true

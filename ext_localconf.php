@@ -1,11 +1,39 @@
 <?php
 
+/*
+ * This file is part of the package jweiland/jwauth.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE file that was distributed with this source code.
+ */
+
+use JWeiland\Jwauth\Form\FieldWizard\RemoteAddress;
+use JWeiland\Jwauth\Form\FormDataProvider\AddDetectedIpAddressesToValuePicker;
+use JWeiland\Jwauth\Service\IpAuthService;
+use TYPO3\CMS\Backend\Form\FormDataProvider\TcaColumnsProcessShowitem;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+
 if (!defined('TYPO3')) {
     die('Access denied.');
 }
 
 // Check login with each Request
 $GLOBALS['TYPO3_CONF_VARS']['SVCONF']['auth']['setup']['FE_alwaysFetchUser'] = true;
+
+// Register a fieldWizard to show the REMOTE_ADDR TYPO3 currently detects below
+// the ip_addresses (fe_users) and ip_address (tx_jwauth_domain_model_ipaddress) fields.
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][1755000000] = [
+    'nodeName' => 'remoteAddress',
+    'priority' => 40,
+    'class' => RemoteAddress::class,
+];
+
+// Suggest the currently detected remote address(es) in the ip_address valuePicker.
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['formDataGroup']['tcaDatabaseRecord'][AddDetectedIpAddressesToValuePicker::class] = [
+    'depends' => [
+        TcaColumnsProcessShowitem::class,
+    ],
+];
 
 // Following line allows us to fetch the user data from Session instead of Database.
 // But as long as we don't have a real login, we can't deactivate the service directly with help of
@@ -14,10 +42,10 @@ $GLOBALS['TYPO3_CONF_VARS']['SVCONF']['auth']['setup']['FE_alwaysFetchUser'] = t
 // $GLOBALS['TYPO3_CONF_VARS']['SVCONF']['auth']['setup']['FE_fetchUserIfNoSession'] = true;
 
 // Add service to get a fe_user with defined IP-Address
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
+ExtensionManagementUtility::addService(
     'jwauth',
     'auth',
-    \JWeiland\Jwauth\Service\IpAuthService::class,
+    IpAuthService::class,
     [
         'title' => 'FE IP authentication',
         'description' => 'Login to FE with help of IP',
@@ -28,10 +56,6 @@ $GLOBALS['TYPO3_CONF_VARS']['SVCONF']['auth']['setup']['FE_alwaysFetchUser'] = t
         'quality' => 70,
         'os' => '',
         'exec' => '',
-        'className' => \JWeiland\Jwauth\Service\IpAuthService::class,
-    ]
+        'className' => IpAuthService::class,
+    ],
 );
-
-// Delete saved session data from fe_users session
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['hook_eofe']['EXT:jwauth']
-    = \JWeiland\Jwauth\FeUser::class . '->clearFeUserSession';
