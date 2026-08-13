@@ -15,7 +15,7 @@
     />
     <project title="JW Auth"
              release="5.0"
-             version="5.0.0"
+             version="5.0.1"
              copyright="since 2012 by jweiland.net"
     />
     <inventory id="t3coreapi"
