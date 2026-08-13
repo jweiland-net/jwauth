@@ -8,8 +8,8 @@
  */
 
 $EM_CONF[$_EXTKEY] = [
-    'title' => 'JW Auth',
-    'description' => 'Login to TYPO3 frontend with your static IP address',
+    'title' => 'IP Address Authentication',
+    'description' => 'Automatic frontend login based on the visitor\'s IP address',
     'category' => 'plugin',
     'author' => 'Stefan Froemken',
     'author_email' => 'projects@jweiland.net',
