@@ -22,6 +22,9 @@ return [
             'disabled' => 'hidden',
         ],
         'searchFields' => 'ip_address',
+        'typeicon_classes' => [
+            'default' => 'jwauth-ipaddress',
+        ],
     ],
     'types' => [
         '1' => [
