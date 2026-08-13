@@ -57,6 +57,11 @@ return [
                 'max' => 43,
                 'eval' => 'trim',
                 'required' => true,
+                'fieldWizard' => [
+                    'remoteAddress' => [
+                        'renderType' => 'remoteAddress',
+                    ],
+                ],
             ],
         ],
     ],

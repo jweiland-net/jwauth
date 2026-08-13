@@ -27,6 +27,10 @@
 				<source>We prefer to insert the full IPv4 or IPv6 address here. You can use * to mask IPv4 addresses: 192.168.*.*. In case of partly IPv6 addresses you have to insert the full address including mask: 2001:0db8:85a3:8a2e:0370:7334:0000:0000/96. If you don't add the mask we will use 128 which means: the complete IPv6 has to match.</source>
 				<target>Wir empfehlen die vollständige IP Adresse einzutragen. Für IPv4 Adressen kann * für die Maskierung verwendet werden: 192.168.*.*. Bei Verwendung von IPv6 muss immer die vollständige IPv6 Adresse eingetragen werden inkl. Mask: 2001:0db8:85a3:8a2e:0370:7334:0000:0000/96. Wenn die Mask nicht mit angegeben wird, dann verwenden wir 128, was die Überprüfung der vollständigen IPv6 zur Folge hat.</target>
 			</trans-unit>
+			<trans-unit id="fieldWizard.remoteAddress">
+				<source>TYPO3 currently detects this remote address for you:</source>
+				<target>TYPO3 erkennt aktuell folgende Remote-Adresse für dich:</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

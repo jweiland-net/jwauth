@@ -37,6 +37,11 @@ ExtensionManagementUtility::addTCAcolumns(
                         ],
                     ],
                 ],
+                'fieldWizard' => [
+                    'remoteAddress' => [
+                        'renderType' => 'remoteAddress',
+                    ],
+                ],
             ],
         ],
     ],
