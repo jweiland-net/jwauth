@@ -15,7 +15,7 @@ use JWeiland\Jwauth\Service\IpAddressMatcher;
 use JWeiland\Jwauth\Upgrade\MigrateIpAddressToMMUpgrade;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Install\Service\UpgradeWizardsService;
+use TYPO3\CMS\Core\Service\UpgradeWizardsService;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 class MigrateIpAddressToMMUpgradeTest extends FunctionalTestCase
