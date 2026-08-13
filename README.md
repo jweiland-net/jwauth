@@ -53,8 +53,8 @@ format, or rendered at [docs.typo3.org](https://docs.typo3.org/p/jweiland/jwauth
   after the response has been built, but only if `IpAddressMatcher` confirms
   one of the fe_user's IP addresses still matches the visitor's remote
   address. This replaces the `hook_eofe` hook that older TYPO3 versions
-  offered for this purpose and that no longer exists on TYPO3 13; middlewares
-  are the current API for running code around the whole Frontend
+  offered for this purpose and that has since been removed in favor of
+  middlewares, the current API for running code around the whole Frontend
   request/response cycle. This is a deliberate security measure: an
   administrator must always be able to revoke this kind of access simply by
   deactivating the extension or removing the matching IP addresses — the
@@ -106,7 +106,8 @@ Download and install `jwauth` with the extension manager module.
 
 ## 5 Requirements
 
-* TYPO3 `^13.4` (see `composer.json` / `ext_emconf.php`).
+* See `composer.json` / `ext_emconf.php` for the exact TYPO3 version this
+  release requires.
 
 ## 6 Support
 

@@ -13,14 +13,14 @@ namespace JWeiland\Jwauth\Upgrade;
 
 use Doctrine\DBAL\Exception as DBALException;
 use Symfony\Component\Console\Output\OutputInterface;
+use TYPO3\CMS\Core\Attribute\UpgradeWizard;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
+use TYPO3\CMS\Core\Upgrades\ChattyInterface;
+use TYPO3\CMS\Core\Upgrades\DatabaseUpdatedPrerequisite;
+use TYPO3\CMS\Core\Upgrades\UpgradeWizardInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Install\Attribute\UpgradeWizard;
-use TYPO3\CMS\Install\Updates\ChattyInterface;
-use TYPO3\CMS\Install\Updates\DatabaseUpdatedPrerequisite;
-use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
 
 /**
  * Migrates the legacy single-value fe_users.ip_address column into the new

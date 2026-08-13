@@ -71,9 +71,9 @@ class ClearIpAuthenticatedSessionMiddlewareTest extends UnitTestCase
     {
         $request = $this->getRequestWithFrontendUserAndRemoteAddress(['uid' => 0], '10.0.0.1');
         $frontendUser = $request->getAttribute('frontend.user');
-        $frontendUser->expects(self::never())->method('logoff');
+        $frontendUser->expects($this->never())->method('logoff');
 
-        $this->ipAddressMatcherMock->expects(self::never())->method('userHasMatchingIpAddress');
+        $this->ipAddressMatcherMock->expects($this->never())->method('userHasMatchingIpAddress');
 
         $response = $this->createMock(ResponseInterface::class);
         $handler = $this->createMock(RequestHandlerInterface::class);
@@ -87,7 +87,7 @@ class ClearIpAuthenticatedSessionMiddlewareTest extends UnitTestCase
     {
         $request = $this->getRequestWithFrontendUserAndRemoteAddress(['uid' => 1], '10.0.0.2');
         $frontendUser = $request->getAttribute('frontend.user');
-        $frontendUser->expects(self::never())->method('logoff');
+        $frontendUser->expects($this->never())->method('logoff');
 
         $this->ipAddressMatcherMock->method('userHasMatchingIpAddress')->with(1, '10.0.0.2')->willReturn(false);
 
@@ -103,7 +103,7 @@ class ClearIpAuthenticatedSessionMiddlewareTest extends UnitTestCase
     {
         $request = $this->getRequestWithFrontendUserAndRemoteAddress(['uid' => 1], '10.0.0.1');
         $frontendUser = $request->getAttribute('frontend.user');
-        $frontendUser->expects(self::once())->method('logoff');
+        $frontendUser->expects($this->once())->method('logoff');
 
         $this->ipAddressMatcherMock->method('userHasMatchingIpAddress')->with(1, '10.0.0.1')->willReturn(true);
 
