@@ -28,7 +28,7 @@ class RemoteAddress extends AbstractNode
         $result = $this->initializeResultArray();
 
         $label = $this->getLanguageService()->sL(
-            'LLL:EXT:jwauth/Resources/Private/Language/locallang_db.xlf:fieldWizard.remoteAddress'
+            'LLL:EXT:jwauth/Resources/Private/Language/locallang_db.xlf:fieldWizard.remoteAddress',
         );
         $remoteAddress = htmlspecialchars(strip_tags(GeneralUtility::getIndpEnv('REMOTE_ADDR')));
 
