@@ -1,5 +1,8 @@
 <?php
 
+use JWeiland\Jwauth\Service\IpAuthService;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+
 if (!defined('TYPO3')) {
     die('Access denied.');
 }
@@ -14,10 +17,10 @@ $GLOBALS['TYPO3_CONF_VARS']['SVCONF']['auth']['setup']['FE_alwaysFetchUser'] = t
 // $GLOBALS['TYPO3_CONF_VARS']['SVCONF']['auth']['setup']['FE_fetchUserIfNoSession'] = true;
 
 // Add service to get a fe_user with defined IP-Address
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
+ExtensionManagementUtility::addService(
     'jwauth',
     'auth',
-    \JWeiland\Jwauth\Service\IpAuthService::class,
+    IpAuthService::class,
     [
         'title' => 'FE IP authentication',
         'description' => 'Login to FE with help of IP',
@@ -28,6 +31,6 @@ $GLOBALS['TYPO3_CONF_VARS']['SVCONF']['auth']['setup']['FE_alwaysFetchUser'] = t
         'quality' => 70,
         'os' => '',
         'exec' => '',
-        'className' => \JWeiland\Jwauth\Service\IpAuthService::class,
+        'className' => IpAuthService::class,
     ]
 );
