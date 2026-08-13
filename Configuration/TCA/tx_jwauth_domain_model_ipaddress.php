@@ -15,11 +15,18 @@ return [
         'label' => 'ip_address',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
+        'versioningWS' => true,
+        'origUid' => 't3_origuid',
+        'languageField' => 'sys_language_uid',
+        'transOrigPointerField' => 'l10n_parent',
+        'transOrigDiffSourceField' => 'l10n_diffsource',
         'delete' => 'deleted',
         'adminOnly' => true,
         'rootLevel' => 1,
         'enablecolumns' => [
             'disabled' => 'hidden',
+            'starttime' => 'starttime',
+            'endtime' => 'endtime',
         ],
         'searchFields' => 'ip_address',
         'typeicon_classes' => [
@@ -28,25 +35,19 @@ return [
     ],
     'types' => [
         '1' => [
-            'showitem' => 'ip_address, hidden',
+            'showitem' => '
+                --palette--;;languageHidden, ip_address,
+                --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access,
+                --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access',
+        ],
+    ],
+    'palettes' => [
+        'languageHidden' => ['showitem' => 'sys_language_uid, l10n_parent, hidden'],
+        'access' => [
+            'showitem' => 'starttime;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:starttime_formlabel,endtime;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:endtime_formlabel',
         ],
     ],
     'columns' => [
-        'hidden' => [
-            'exclude' => true,
-            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.visible',
-            'config' => [
-                'type' => 'check',
-                'renderType' => 'checkboxToggle',
-                'items' => [
-                    [
-                        'label' => '',
-                        'value' => '',
-                        'invertStateDisplay' => true,
-                    ],
-                ],
-            ],
-        ],
         'ip_address' => [
             'exclude' => true,
             'label' => 'LLL:EXT:jwauth/Resources/Private/Language/locallang_db.xlf:tx_jwauth_domain_model_ipaddress.ip_address',

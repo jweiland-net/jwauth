@@ -7,11 +7,13 @@
  * LICENSE file that was distributed with this source code.
  */
 
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+
 if (!defined('TYPO3')) {
     die('Access denied.');
 }
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns(
+ExtensionManagementUtility::addTCAcolumns(
     'fe_users',
     [
         'ip_addresses' => [
@@ -40,7 +42,7 @@ if (!defined('TYPO3')) {
     ],
 );
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
+ExtensionManagementUtility::addToAllTCAtypes(
     'fe_users',
     'ip_addresses',
 );
