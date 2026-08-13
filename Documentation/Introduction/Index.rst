@@ -1,4 +1,6 @@
-﻿..  include:: /Includes.rst.txt
+:navigation-title: Introduction
+
+..  include:: /Includes.rst.txt
 
 
 ..  _introduction:
@@ -12,8 +14,15 @@ Introduction
 What does it do?
 ================
 
-This extension adds a new service to authenticate FE-Users directly if
-IP address of their client matches IP address configured in FE-User record.
+This extension adds a new authentication service that logs a visitor into the
+TYPO3 frontend automatically if the IP address of their client matches the IP
+address configured on a `fe_users` record.
+
+Since jwauth re-checks the IP address on every single request instead of
+relying on a persisting login session, deactivating the extension or removing
+the IP address from a `fe_users` record immediately revokes access again.
+
+..  _screenshot:
 
 Screenshot
 ==========

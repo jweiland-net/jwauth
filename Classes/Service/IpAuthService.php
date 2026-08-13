@@ -11,9 +11,9 @@ declare(strict_types=1);
 
 namespace JWeiland\Jwauth\Service;
 
-use Doctrine\DBAL\DBALException;
-use JWeiland\Jwauth\Traits\ConnectionPoolTrait;
+use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Core\Authentication\AbstractAuthenticationService;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\FrontendRestrictionContainer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -23,7 +23,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class IpAuthService extends AbstractAuthenticationService
 {
-    use ConnectionPoolTrait;
+    public function __construct(
+        private readonly ConnectionPool $connectionPool,
+    ) {}
 
     /**
      * Get fe_user with given IP-Address
@@ -131,7 +133,7 @@ class IpAuthService extends AbstractAuthenticationService
 
     private function getPreparedQueryBuilderForFeUsers(): QueryBuilder
     {
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('fe_users');
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable('fe_users');
         $queryBuilder->setRestrictions(GeneralUtility::makeInstance(FrontendRestrictionContainer::class));
 
         return $queryBuilder

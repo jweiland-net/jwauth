@@ -1,7 +1,6 @@
 # TYPO3 Extension `jwauth`
 
-[![CI - TYPO3 12](https://github.com/jweiland-net/jwauth/actions/workflows/typo3_12.yml/badge.svg)](https://github.com/jweiland-net/jwauth/actions/workflows/typo3_12.yml)
-[![CI - TYPO3 11](https://github.com/jweiland-net/jwauth/actions/workflows/typo3_11.yml/badge.svg)](https://github.com/jweiland-net/jwauth/actions/workflows/typo3_11.yml)
+[![CI](https://github.com/jweiland-net/jwauth/actions/workflows/ci.yml/badge.svg)](https://github.com/jweiland-net/jwauth/actions/workflows/ci.yml)
 
 TYPO3 extension providing a Frontend authentication service that logs in a
 `fe_users` record automatically if the visitor's client IP address matches
@@ -21,9 +20,11 @@ format, or rendered at [docs.typo3.org](https://docs.typo3.org/p/jweiland/jwauth
 ## 2 How it works
 
 * A new TCA input field `ip_address` is added to `fe_users` (see
-  `Configuration/TCA/Overrides/fe_users.php`). It is appended to every
-  `fe_users` TCA type and shown on the last tab of the record, there is no
-  dedicated tab for it.
+  `Configuration/TCA/Overrides/fe_users.php`, `max => 43` to fit a full IPv6
+  address). It is appended to every `fe_users` TCA type and shown on the last
+  tab of the record, there is no dedicated tab for it. There is no
+  `ext_tables.sql` — TYPO3 derives the `varchar(43)` database column
+  automatically from the TCA configuration.
 * `Classes/Service/IpAuthService.php` registers itself as a TYPO3
   authentication service of subtype `getUserFE,authUserFE` (see
   `ext_localconf.php`). It runs with `priority = 70` / `quality = 70`, which is
@@ -44,13 +45,19 @@ format, or rendered at [docs.typo3.org](https://docs.typo3.org/p/jweiland/jwauth
   `$GLOBALS['TYPO3_CONF_VARS']['SVCONF']['auth']['setup']['FE_alwaysFetchUser'] = true;`
   so the authentication chain — and therefore the IP check — runs on
   **every** request instead of relying on the PHP session.
-* `Classes/FeUser.php` hooks into `hook_eofe` (end-of-frontend-user hook) and
-  removes the Frontend user session (`fe_sessions`) again after each request,
-  but only if the previously authenticated user's `ip_address` still matches
-  `$_SERVER['REMOTE_ADDR']`. This is a deliberate security measure: an
-  administrator must always be able to revoke this kind of access simply by
-  deactivating the extension or clearing the IP field — the visitor must not
-  stay logged in via a lingering session.
+* `Classes/Middleware/ClearIpAuthenticatedSessionMiddleware.php` (registered
+  in `Configuration/RequestMiddlewares.php`, running right after TYPO3's own
+  `typo3/cms-frontend/authentication` middleware) logs the Frontend user off
+  again — via the core `FrontendUserAuthentication::logoff()` API — right
+  after the response has been built, but only if the authenticated user's
+  `ip_address` still matches the visitor's remote address. This replaces the
+  `hook_eofe` hook that older TYPO3 versions offered for this purpose and
+  that no longer exists on TYPO3 13; middlewares are the current API for
+  running code around the whole Frontend request/response cycle. This is a
+  deliberate security measure: an administrator must always be able to
+  revoke this kind of access simply by deactivating the extension or
+  clearing the IP field — the visitor must not stay logged in via a
+  lingering session.
 
 ## 3 Security notes
 
@@ -94,11 +101,7 @@ Download and install `jwauth` with the extension manager module.
 
 ## 5 Requirements
 
-* TYPO3 `^11.5.23 || ^12.4` (see `composer.json` / `ext_emconf.php`). This
-  checkout of `jwauth` has **not** been upgraded to TYPO3 13 yet — unlike
-  most other extensions in this repository, its `composer.json` still
-  targets 11/12 and needs the usual deprecation/API pass before it can run
-  on TYPO3 13.4.
+* TYPO3 `^13.4` (see `composer.json` / `ext_emconf.php`).
 
 ## 6 Support
 

@@ -12,7 +12,9 @@ declare(strict_types=1);
 namespace JWeiland\Jwauth\Tests\Functional\Service;
 
 use JWeiland\Jwauth\Service\IpAuthService;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
@@ -29,7 +31,7 @@ class IpAuthServiceTest extends FunctionalTestCase
     protected $frontendUserAuthenticationMock;
 
     protected array $testExtensionsToLoad = [
-        'typo3conf/ext/jwauth',
+        'jweiland/jwauth',
     ];
 
     protected array $authInfo = [
@@ -46,7 +48,7 @@ class IpAuthServiceTest extends FunctionalTestCase
         $this->frontendUserAuthenticationMock = $this->createMock(FrontendUserAuthentication::class);
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/fe_users.csv');
 
-        $this->subject = new IpAuthService();
+        $this->subject = new IpAuthService($this->get(ConnectionPool::class));
     }
 
     protected function tearDown(): void
@@ -59,9 +61,7 @@ class IpAuthServiceTest extends FunctionalTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function initReturnsTrue(): void
     {
         self::assertTrue(
@@ -69,9 +69,7 @@ class IpAuthServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getUserReturnsEmptyArray(): void
     {
         self::assertSame(
@@ -80,9 +78,7 @@ class IpAuthServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getUserWithNonMatchingIpAddressReturnsNull(): void
     {
         $authInfo = $this->authInfo;
@@ -99,9 +95,7 @@ class IpAuthServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getUserWithMatchingIpAddressReturnsUserArray(): void
     {
         $authInfo = $this->authInfo;
@@ -124,9 +118,7 @@ class IpAuthServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getUserWithPartlyMatchingIpAddressReturnsUserArray(): void
     {
         $authInfo = $this->authInfo;
@@ -149,9 +141,7 @@ class IpAuthServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getUserWithVeryPartlyMatchingIpAddressReturnsUserArray(): void
     {
         $authInfo = $this->authInfo;
@@ -174,9 +164,7 @@ class IpAuthServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getUserWithMatchingIpv6AddressReturnsUserArray(): void
     {
         $authInfo = $this->authInfo;
@@ -199,9 +187,7 @@ class IpAuthServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getUserWithPartlyMatchingIpv6AddressReturnsUserArray(): void
     {
         $authInfo = $this->authInfo;

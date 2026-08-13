@@ -1,7 +1,9 @@
+:navigation-title: Overview
+
 ..  include:: /Includes.rst.txt
 
 
-.. _start:
+..  _start:
 
 =======
 JW Auth
@@ -14,7 +16,7 @@ JW Auth
     jweiland/jwauth
 
 :Version:
-    |release|
+    5.0.0
 
 :Language:
     en
@@ -27,12 +29,9 @@ JW Auth
     `Creative Commons BY 4.0 <https://creativecommons.org/licenses/by/4.0/>`__
     license.
 
-:Rendered:
-    |today|
-
 ----
 
-Login to TYPO3 frontend with your static IP address
+Login to the TYPO3 frontend with your static IP address.
 
 ----
 
@@ -54,4 +53,3 @@ Login to TYPO3 frontend with your static IP address
     :hidden:
 
     Sitemap
-    genindex

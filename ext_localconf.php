@@ -31,7 +31,3 @@ $GLOBALS['TYPO3_CONF_VARS']['SVCONF']['auth']['setup']['FE_alwaysFetchUser'] = t
         'className' => \JWeiland\Jwauth\Service\IpAuthService::class,
     ]
 );
-
-// Delete saved session data from fe_users session
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['hook_eofe']['EXT:jwauth']
-    = \JWeiland\Jwauth\FeUser::class . '->clearFeUserSession';

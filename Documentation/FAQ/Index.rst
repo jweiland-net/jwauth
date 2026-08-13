@@ -1,21 +1,27 @@
-.. include:: ../Includes.rst.txt
+:navigation-title: FAQ
+
+..  include:: /Includes.rst.txt
 
 
-.. _faq:
+..  _faq:
 
 ===
 FAQ
 ===
 
+..  _faq-ipv6:
+
 Is this extension IPv6 compatible?
 ==================================
 
-Yes it is. It uses the comIP() method of GeneralUtility which can validate
-IPv4 and IPv6 addresses.
+Yes, it is. It uses the :php:`GeneralUtility::cmpIP()` method, which can
+validate both IPv4 and IPv6 addresses.
+
+..  _faq-logout:
 
 What about "Logout"?
 ====================
 
-Ah yeah. That's funny? Users with matched IP addresses are authenticated with
-EACH request. You can't logout. So, if you press "Logout" the page reloads, we
-have a new request and you're logged in again.
+Ah yeah, that is funny. Visitors with a matching IP address are authenticated
+on every single request. You cannot log out: if you press "Logout" the page
+reloads, a new request is made, and you are logged in again right away.
