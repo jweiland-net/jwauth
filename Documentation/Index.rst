@@ -31,7 +31,7 @@ JW Auth
 
 ----
 
-Login to the TYPO3 frontend with your static IP address.
+Login to the TYPO3 frontend with one of your static IP addresses.
 
 ----
 
@@ -44,6 +44,7 @@ Login to the TYPO3 frontend with your static IP address.
     Introduction/Index
     Installation/Index
     Configuration/Index
+    Upgrade/Index
     Developer/Index
     FAQ/Index
 

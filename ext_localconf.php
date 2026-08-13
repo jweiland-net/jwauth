@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the package jweiland/jwauth.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE file that was distributed with this source code.
+ */
+
 use JWeiland\Jwauth\Service\IpAuthService;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
@@ -32,5 +39,5 @@ ExtensionManagementUtility::addService(
         'os' => '',
         'exec' => '',
         'className' => IpAuthService::class,
-    ]
+    ],
 );

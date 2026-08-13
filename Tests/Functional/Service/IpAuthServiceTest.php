@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Jwauth\Tests\Functional\Service;
 
+use JWeiland\Jwauth\Service\IpAddressMatcher;
 use JWeiland\Jwauth\Service\IpAuthService;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -48,14 +49,17 @@ class IpAuthServiceTest extends FunctionalTestCase
         $this->frontendUserAuthenticationMock = $this->createMock(FrontendUserAuthentication::class);
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/fe_users.csv');
 
-        $this->subject = new IpAuthService($this->get(ConnectionPool::class));
+        $this->subject = new IpAuthService(
+            $this->get(ConnectionPool::class),
+            new IpAddressMatcher($this->get(ConnectionPool::class)),
+        );
     }
 
     protected function tearDown(): void
     {
         unset(
             $this->subject,
-            $this->frontendUserAuthenticationMock
+            $this->frontendUserAuthenticationMock,
         );
 
         parent::tearDown();
@@ -65,7 +69,21 @@ class IpAuthServiceTest extends FunctionalTestCase
     public function initReturnsTrue(): void
     {
         self::assertTrue(
-            $this->subject->init()
+            $this->subject->init(),
+        );
+    }
+
+    /**
+     * Proves IpAuthService (public: true in Services.yaml) is resolvable through the
+     * container the same way GeneralUtility::makeInstanceService() resolves it, including
+     * its now-autowired IpAddressMatcher dependency (which needs no Services.yaml entry).
+     */
+    #[Test]
+    public function serviceIsResolvableThroughContainer(): void
+    {
+        self::assertInstanceOf(
+            IpAuthService::class,
+            $this->get(IpAuthService::class),
         );
     }
 
@@ -74,7 +92,7 @@ class IpAuthServiceTest extends FunctionalTestCase
     {
         self::assertSame(
             [],
-            $this->subject->getUser()
+            $this->subject->getUser(),
         );
     }
 
@@ -87,11 +105,11 @@ class IpAuthServiceTest extends FunctionalTestCase
             '',
             [],
             $authInfo,
-            $this->frontendUserAuthenticationMock
+            $this->frontendUserAuthenticationMock,
         );
 
         self::assertNull(
-            $this->subject->getUser()
+            $this->subject->getUser(),
         );
     }
 
@@ -104,17 +122,17 @@ class IpAuthServiceTest extends FunctionalTestCase
             '',
             [],
             $authInfo,
-            $this->frontendUserAuthenticationMock
+            $this->frontendUserAuthenticationMock,
         );
 
         $matchedUser = $this->subject->getUser();
         self::assertSame(
             2,
-            $matchedUser['uid']
+            $matchedUser['uid'],
         );
         self::assertSame(
             'FullIPv4',
-            $matchedUser['username']
+            $matchedUser['username'],
         );
     }
 
@@ -127,17 +145,17 @@ class IpAuthServiceTest extends FunctionalTestCase
             '',
             [],
             $authInfo,
-            $this->frontendUserAuthenticationMock
+            $this->frontendUserAuthenticationMock,
         );
 
         $matchedUser = $this->subject->getUser();
         self::assertSame(
             3,
-            $matchedUser['uid']
+            $matchedUser['uid'],
         );
         self::assertSame(
             'PartialIPv4',
-            $matchedUser['username']
+            $matchedUser['username'],
         );
     }
 
@@ -150,17 +168,17 @@ class IpAuthServiceTest extends FunctionalTestCase
             '',
             [],
             $authInfo,
-            $this->frontendUserAuthenticationMock
+            $this->frontendUserAuthenticationMock,
         );
 
         $matchedUser = $this->subject->getUser();
         self::assertSame(
             4,
-            $matchedUser['uid']
+            $matchedUser['uid'],
         );
         self::assertSame(
             'VeryPartialIPv4',
-            $matchedUser['username']
+            $matchedUser['username'],
         );
     }
 
@@ -173,17 +191,17 @@ class IpAuthServiceTest extends FunctionalTestCase
             '',
             [],
             $authInfo,
-            $this->frontendUserAuthenticationMock
+            $this->frontendUserAuthenticationMock,
         );
 
         $matchedUser = $this->subject->getUser();
         self::assertSame(
             5,
-            $matchedUser['uid']
+            $matchedUser['uid'],
         );
         self::assertSame(
             'IPv6',
-            $matchedUser['username']
+            $matchedUser['username'],
         );
     }
 
@@ -196,18 +214,79 @@ class IpAuthServiceTest extends FunctionalTestCase
             '',
             [],
             $authInfo,
-            $this->frontendUserAuthenticationMock
+            $this->frontendUserAuthenticationMock,
         );
 
         $matchedUser = $this->subject->getUser();
 
         self::assertSame(
             6,
-            $matchedUser['uid']
+            $matchedUser['uid'],
         );
         self::assertSame(
             'PartlyIPv6',
-            $matchedUser['username']
+            $matchedUser['username'],
+        );
+    }
+
+    #[Test]
+    public function getUserWithEitherOfTwoIpAddressesForSameUserReturnsThatUser(): void
+    {
+        foreach (['203.0.113.10', '203.0.113.20'] as $remoteAddress) {
+            $authInfo = $this->authInfo;
+            $authInfo['REMOTE_ADDR'] = $remoteAddress;
+            $this->subject->initAuth(
+                '',
+                [],
+                $authInfo,
+                $this->frontendUserAuthenticationMock,
+            );
+
+            $matchedUser = $this->subject->getUser();
+            self::assertSame(
+                7,
+                $matchedUser['uid'],
+            );
+            self::assertSame(
+                'MultiIp',
+                $matchedUser['username'],
+            );
+        }
+    }
+
+    #[Test]
+    public function authUserReturns200WhenIpAddressMatches(): void
+    {
+        $authInfo = $this->authInfo;
+        $authInfo['REMOTE_ADDR'] = '192.168.100.123';
+        $this->subject->initAuth(
+            '',
+            [],
+            $authInfo,
+            $this->frontendUserAuthenticationMock,
+        );
+
+        self::assertSame(
+            200,
+            $this->subject->authUser(['uid' => 2]),
+        );
+    }
+
+    #[Test]
+    public function authUserReturns100WhenNoIpAddressMatches(): void
+    {
+        $authInfo = $this->authInfo;
+        $authInfo['REMOTE_ADDR'] = '8.8.8.8';
+        $this->subject->initAuth(
+            '',
+            [],
+            $authInfo,
+            $this->frontendUserAuthenticationMock,
+        );
+
+        self::assertSame(
+            100,
+            $this->subject->authUser(['uid' => 2]),
         );
     }
 }

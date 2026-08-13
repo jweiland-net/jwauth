@@ -14,21 +14,21 @@ namespace JWeiland\Jwauth\Service;
 use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Core\Authentication\AbstractAuthenticationService;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\FrontendRestrictionContainer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Authenticate FE User against its IP address
+ * Authenticate FE User against any of its configured IP addresses
  */
 class IpAuthService extends AbstractAuthenticationService
 {
     public function __construct(
         private readonly ConnectionPool $connectionPool,
+        private readonly IpAddressMatcher $ipAddressMatcher,
     ) {}
 
     /**
-     * Get fe_user with given IP-Address
+     * Get fe_user with an IP address matching the visitor's remote address
      */
     public function getUser(): ?array
     {
@@ -38,91 +38,28 @@ class IpAuthService extends AbstractAuthenticationService
             return [];
         }
 
-        $bestMatchingUser = $this->getBestMatchingUser($remoteAddress);
-        if ($bestMatchingUser === []) {
-            $bestMatchingUser = $this->getBestPartlyMatchingUser($remoteAddress);
+        foreach ($this->fetchFeUsersWithIpAddresses() as $candidate) {
+            foreach ($candidate['ipAddresses'] as $ipAddress) {
+                if (GeneralUtility::cmpIP($remoteAddress, $ipAddress)) {
+                    return $candidate['feUser'];
+                }
+            }
         }
 
-        return $bestMatchingUser ?: null;
-    }
-
-    private function getBestMatchingUser(string $remoteAddress): array
-    {
-        $queryBuilder = $this->getPreparedQueryBuilderForFeUsers();
-        try {
-            $frontendUser = $queryBuilder
-                ->where(
-                    $queryBuilder->expr()->eq(
-                        'ip_address',
-                        $queryBuilder->createNamedParameter($remoteAddress)
-                    )
-                )
-                ->executeQuery()
-                ->fetchAssociative();
-
-            if ($frontendUser === false) {
-                $frontendUser = [];
-            }
-        } catch (DBALException | \Exception $exception) {
-            $frontendUser = [];
-        }
-
-        return $frontendUser;
-    }
-
-    private function getBestPartlyMatchingUser(string $remoteAddress): array
-    {
-        $isIPv6 = (bool)strpos($remoteAddress, ':');
-        $divider = $isIPv6 ? ':' : '.';
-
-        $matchedFrontendUsers = [];
-        $addressParts = GeneralUtility::trimExplode($divider, $remoteAddress);
-        array_pop($addressParts);
-        $queryBuilder = $this->getPreparedQueryBuilderForFeUsers();
-        while ($addressParts) {
-            try {
-                $frontendUsers = $queryBuilder
-                    ->where(
-                        $queryBuilder->expr()->neq(
-                            'ip_address',
-                            $queryBuilder->createNamedParameter('')
-                        ),
-                        $queryBuilder->expr()->like(
-                            'ip_address',
-                            $queryBuilder->createNamedParameter(implode($divider, $addressParts) . '%')
-                        )
-                    )
-                    ->executeQuery()
-                    ->fetchAllAssociative();
-            } catch (DBALException | \Exception $exception) {
-                $frontendUsers = [];
-            }
-
-            $remoteAddress = $this->authInfo['REMOTE_ADDR'];
-            $matchedFrontendUsers = array_filter($frontendUsers, static function ($frontendUser) use ($remoteAddress): bool {
-                return GeneralUtility::cmpIP($remoteAddress, $frontendUser['ip_address']);
-            });
-
-            if (!empty($matchedFrontendUsers)) {
-                break;
-            }
-
-            array_pop($addressParts);
-        }
-
-        $matchedFrontendUser = array_shift($matchedFrontendUsers);
-
-        return $matchedFrontendUser ?? [];
+        return null;
     }
 
     /**
-     * Authenticate user as valid, if IP-Address matches RemoteHost
+     * Authenticate user as valid, if any of its IP addresses matches RemoteHost
      */
     public function authUser(array $temporaryUser): int
     {
+        $feUserUid = (int)($temporaryUser['uid'] ?? 0);
+        $remoteAddress = $this->authInfo['REMOTE_ADDR'] ?? '';
+
         // this is an additional check against the IP-Address
         // just to be sure
-        if (GeneralUtility::cmpIP($this->authInfo['REMOTE_ADDR'], $temporaryUser['ip_address'])) {
+        if ($this->ipAddressMatcher->userHasMatchingIpAddress($feUserUid, $remoteAddress)) {
             // 200 and above indicates a directly authenticated user with no further checks
             return 200;
         }
@@ -131,13 +68,46 @@ class IpAuthService extends AbstractAuthenticationService
         return 100;
     }
 
-    private function getPreparedQueryBuilderForFeUsers(): QueryBuilder
+    /**
+     * @return array<int, array{feUser: array<string, mixed>, ipAddresses: list<string>}>
+     */
+    private function fetchFeUsersWithIpAddresses(): array
     {
         $queryBuilder = $this->connectionPool->getQueryBuilderForTable('fe_users');
         $queryBuilder->setRestrictions(GeneralUtility::makeInstance(FrontendRestrictionContainer::class));
 
-        return $queryBuilder
-            ->select('*')
-            ->from('fe_users');
+        try {
+            $feUsersWithIpAddress = $queryBuilder
+                ->select('fe_users.*', 'ip.ip_address AS matched_ip_address')
+                ->from('fe_users')
+                ->innerJoin(
+                    'fe_users',
+                    'tx_jwauth_fe_users_ipaddress_mm',
+                    'mm',
+                    $queryBuilder->expr()->eq('mm.uid_local', $queryBuilder->quoteIdentifier('fe_users.uid')),
+                )
+                ->innerJoin(
+                    'mm',
+                    'tx_jwauth_domain_model_ipaddress',
+                    'ip',
+                    $queryBuilder->expr()->eq('ip.uid', $queryBuilder->quoteIdentifier('mm.uid_foreign')),
+                )
+                ->orderBy('fe_users.uid')
+                ->executeQuery()
+                ->fetchAllAssociative();
+        } catch (DBALException | \Exception $exception) {
+            return [];
+        }
+
+        $candidates = [];
+        foreach ($feUsersWithIpAddress as $feUserWithIpAddress) {
+            $uid = (int)$feUserWithIpAddress['uid'];
+            $ipAddress = $feUserWithIpAddress['matched_ip_address'];
+            unset($feUserWithIpAddress['matched_ip_address']);
+            $candidates[$uid]['feUser'] ??= $feUserWithIpAddress;
+            $candidates[$uid]['ipAddresses'][] = $ipAddress;
+        }
+
+        return $candidates;
     }
 }
