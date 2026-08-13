@@ -53,7 +53,7 @@ final class AddDetectedIpAddressesToValuePicker implements FormDataProviderInter
 
     /**
      * @param array{version: string, address: string} $detectedAddress
-     * @return array{0: string, 1: string}
+     * @return array{label: string, value: string}
      */
     private function buildValuePickerItem(array $detectedAddress): array
     {
@@ -63,7 +63,10 @@ final class AddDetectedIpAddressesToValuePicker implements FormDataProviderInter
             $detectedAddress['address'],
         );
 
-        return [$label, $detectedAddress['address']];
+        return [
+            'label' => $label,
+            'value' => $detectedAddress['address'],
+        ];
     }
 
     private function getLanguageService(): LanguageService
