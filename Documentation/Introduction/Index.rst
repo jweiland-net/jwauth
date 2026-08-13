@@ -33,7 +33,9 @@ Screenshot
 Here you see the new `IP addresses` relation field in the `fe_users` record.
 Each entry is its own small record holding one IP address or pattern.
 
-..  image:: /Images/Introduction.png
+..  figure:: /Images/Introduction.png
     :alt: New IP addresses field in fe_users record
     :class: with-shadow
-    :width: 400px
+    :zoom: lightbox
+
+    The `IP addresses` field on the `fe_users` edit form

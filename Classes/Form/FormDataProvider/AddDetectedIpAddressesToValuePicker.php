@@ -11,19 +11,23 @@ declare(strict_types=1);
 
 namespace JWeiland\Jwauth\Form\FormDataProvider;
 
+use JWeiland\Jwauth\Service\RemoteAddressDetector;
 use TYPO3\CMS\Backend\Form\FormDataProviderInterface;
 use TYPO3\CMS\Core\Localization\LanguageService;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Adds the visitor's currently detected remote address to the valuePicker of
- * the ip_address field, so editors can pick it up directly instead of looking
- * it up separately.
+ * the ip_address field, so editors can pick it up directly instead of
+ * looking it up separately.
  */
 final class AddDetectedIpAddressesToValuePicker implements FormDataProviderInterface
 {
     private const TABLE_NAME = 'tx_jwauth_domain_model_ipaddress';
     private const FIELD_NAME = 'ip_address';
+
+    public function __construct(
+        private readonly RemoteAddressDetector $remoteAddressDetector,
+    ) {}
 
     public function addData(array $result): array
     {
@@ -33,60 +37,33 @@ final class AddDetectedIpAddressesToValuePicker implements FormDataProviderInter
             return $result;
         }
 
-        $detectedAddresses = $this->getDetectedIpAddresses();
-        if ($detectedAddresses === []) {
+        $detectedAddress = $this->remoteAddressDetector->detect();
+        if ($detectedAddress === null) {
             return $result;
         }
 
         $existingItems = $result['processedTca']['columns'][self::FIELD_NAME]['config']['valuePicker']['items'] ?? [];
         $result['processedTca']['columns'][self::FIELD_NAME]['config']['valuePicker']['items'] = array_merge(
             $existingItems,
-            $detectedAddresses,
+            [$this->buildValuePickerItem($detectedAddress)],
         );
 
         return $result;
     }
 
     /**
-     * A dual-stack webserver may expose an IPv4 client through an IPv4-mapped
-     * IPv6 address (e.g. "::ffff:203.0.113.5"). In that case, offer both
-     * notations, since an address stored in the other notation would not
-     * match it with GeneralUtility::cmpIP().
-     *
-     * @return list<array{0: string, 1: string}>
-     */
-    private function getDetectedIpAddresses(): array
-    {
-        $remoteAddress = GeneralUtility::getIndpEnv('REMOTE_ADDR');
-        if (!GeneralUtility::validIP($remoteAddress)) {
-            return [];
-        }
-
-        if (preg_match('/^::ffff:(\d+\.\d+\.\d+\.\d+)$/i', $remoteAddress, $matches)) {
-            return [
-                $this->buildValuePickerItem('valuePicker.detectedIpv6Address', $remoteAddress),
-                $this->buildValuePickerItem('valuePicker.detectedIpv4Address', $matches[1]),
-            ];
-        }
-
-        $labelKey = str_contains($remoteAddress, ':') ? 'valuePicker.detectedIpv6Address' : 'valuePicker.detectedIpv4Address';
-
-        return [
-            $this->buildValuePickerItem($labelKey, $remoteAddress),
-        ];
-    }
-
-    /**
+     * @param array{version: string, address: string} $detectedAddress
      * @return array{0: string, 1: string}
      */
-    private function buildValuePickerItem(string $labelKey, string $ipAddress): array
+    private function buildValuePickerItem(array $detectedAddress): array
     {
+        $labelKey = $detectedAddress['version'] === 'IPv6' ? 'valuePicker.detectedIpv6Address' : 'valuePicker.detectedIpv4Address';
         $label = sprintf(
             $this->getLanguageService()->sL('LLL:EXT:jwauth/Resources/Private/Language/locallang_db.xlf:' . $labelKey),
-            $ipAddress,
+            $detectedAddress['address'],
         );
 
-        return [$label, $ipAddress];
+        return [$label, $detectedAddress['address']];
     }
 
     private function getLanguageService(): LanguageService
